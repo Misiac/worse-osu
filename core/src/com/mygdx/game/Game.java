@@ -1,40 +1,29 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
 
-public class Game extends ApplicationAdapter {
-    SpriteBatch batch;
-    Texture img;
+public class Game extends com.badlogic.gdx.Game {
+
+    public static final int WIDTH = 1920;
+    public static final int HEIGHT = 1080;
+    public SpriteBatch batch;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        img = new Texture("badlogic.jpg");
+        this.setScreen(new MenuScreen(this));
+        System.out.println("test");
 
-        Pixmap pm = new Pixmap(Gdx.files.internal("cursor.png"));
-        Cursor cursor = Gdx.graphics.newCursor(pm, 0, 0);
-        pm.dispose();
-        Gdx.graphics.setCursor(cursor);
 
     }
 
     @Override
     public void render() {
-        ScreenUtils.clear(1, 0, 0, 1);
-        batch.begin();
-        batch.draw(img, 0, 0);
-        batch.end();
+        super.render();
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        img.dispose();
+
     }
 }
