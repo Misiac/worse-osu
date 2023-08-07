@@ -5,5 +5,5 @@ import java.util.List;
 
 public class Map {
 
-    List<HitObjects> hitObjects = new ArrayList<>();
+    List<HitObject> hitObjects = new ArrayList<>();
 }

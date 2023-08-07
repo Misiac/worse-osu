@@ -41,7 +41,10 @@ public class MenuScreen implements Screen {
         game.batch.end();
 
         if (Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > x && Game.HEIGHT - Gdx.input.getY() < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && Gdx.input.getY() > PLAY_BUTTON_Y) {
-            System.out.println("s");
+            if (Gdx.input.isTouched()){
+                this.dispose();
+                game.setScreen(new GameScreen(game));
+            }
         }
 
 
@@ -72,3 +75,5 @@ public class MenuScreen implements Screen {
 
     }
 }
+
+//Gdx.app.exit()
