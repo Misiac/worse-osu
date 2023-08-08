@@ -21,7 +21,7 @@ public class DesktopLauncher {
         config.setForegroundFPS(60);
         config.setResizable(false);
         config.setWindowedMode(Game.WIDTH, Game.HEIGHT);
-        config.setTitle("Osu Clone");
+        config.setTitle("Osu! Clone");
 
 
         config.setWindowListener(new Lwjgl3WindowAdapter() {

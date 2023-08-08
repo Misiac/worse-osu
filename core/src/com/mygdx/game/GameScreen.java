@@ -78,7 +78,6 @@ public class GameScreen implements Screen {
         Texture hitCircleOverlay = new Texture(Gdx.files.internal("hitcircleoverlay.png"));
         Texture approachCircle = new Texture(Gdx.files.internal("approachcircle.png"));
 
-
         filterHitObjects();
 
         game.batch.begin();
