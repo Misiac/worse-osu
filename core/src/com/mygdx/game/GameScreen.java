@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Cursor;
@@ -12,6 +13,9 @@ import com.mygdx.game.model.CircleNumber;
 import com.mygdx.game.model.HitObject;
 import com.mygdx.game.model.Map;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class GameScreen implements Screen {
 
     Game game;
@@ -20,8 +24,10 @@ public class GameScreen implements Screen {
     private int circleY = 240;
     public static final long AR_OFFSET = 900;
     public int hitObjectScale;
+    public List<HitObject> currentHitObjects = new LinkedList<>();
 
-    public static int resolutionMultiplier;
+    public static int resolutionMultiplierX;
+    public static int resolutionMultiplierY;
     long startTimeReference;
     long timeFromStart;
     Map map;
@@ -31,7 +37,8 @@ public class GameScreen implements Screen {
         this.game = game;
         sound = Gdx.audio.newSound(Gdx.files.internal("song.mp3"));
 //        sound.play();
-        resolutionMultiplier = Gdx.graphics.getWidth() / 640;
+        resolutionMultiplierX = Gdx.graphics.getWidth() / 640;
+        resolutionMultiplierY = Gdx.graphics.getHeight() / 480;
         this.map = MapLoader.Load();
 
         Pixmap pm = new Pixmap(Gdx.files.internal("cursor.png"));
@@ -62,14 +69,19 @@ public class GameScreen implements Screen {
 
         int testCounter = 0; // TODO: 08.08.2023
         int approachCircleScale;
+
         for (HitObject hitObject : map.getHitObjects()) {
 
             if (timeFromStart > hitObject.getTime() - AR_OFFSET && timeFromStart < hitObject.getTime()) {
+
+                if (!currentHitObjects.contains(hitObject)) currentHitObjects.add(hitObject);
+
                 Texture circleNumber = new Texture(Gdx.files.internal(
                         CircleNumber.valueOf("N" + testCounter).getPath()
                 ));
-                int calculatedX = hitObject.getOsuPixelX() * resolutionMultiplier;
-                int calculatedY = hitObject.getOsuPixelY() * resolutionMultiplier;
+                int calculatedX = hitObject.getOsuPixelX() * resolutionMultiplierX;
+                int calculatedY = hitObject.getOsuPixelY() * resolutionMultiplierY;
+//                System.out.println("calculated X -> " + calculatedX + " calculated Y -> " + calculatedY) ;
 
                 game.batch.draw(hitCircle, calculatedX, calculatedY);
                 game.batch.draw(hitCircleOverlay, calculatedX, calculatedY);
@@ -82,24 +94,51 @@ public class GameScreen implements Screen {
             }
             testCounter++;
         }
+//        System.out.println("------------");
+
 
         game.batch.end();
 
 
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+
+            for (HitObject hitObject : currentHitObjects) {
+                boolean wasPressed = checkIfObjectsWasPressed(hitObject.getOsuPixelX() * resolutionMultiplierX,
+                        hitObject.getOsuPixelY() * resolutionMultiplierY);
+
+            }
+        }
+
+    }
+
+    private boolean checkIfObjectsWasPressed(int x, int y) {
+
+        int inputX = Gdx.input.getX();
+        int inputY = Math.abs(Gdx.input.getY() - Gdx.graphics.getHeight()); // Y 0 for cursor is top screen but for textures is down so there is a need for conversion
+
+        double distance = Math.sqrt(
+                Math.pow(x - (inputX-64), 2) + Math.pow(y - (inputY-64), 2)
+        );
+        System.out.println("distance -> " + distance + " gdxX -> " + inputX + " gdxY -> " + inputY + " circleX -> " + x + " circleY -> " + y);
+        if (distance < 64) {
+            System.out.println("REGISTERED CLICK");
+            System.out.println(distance);
+            return true;
+
+        }
+        return false;
     }
 
     private int calculateApproachScale(long timeFromStart, long circleHitTime) {
 
-        // MAX 256
-        // MIN 128
-        float input_range = 500;
+        float input_range = 1000 - (float) AR_OFFSET / 2;
         float output_range = 128;
         float scaling_factor = output_range / input_range;
 
         float scaledDifference = (circleHitTime - timeFromStart) * scaling_factor;
         float scaled_Value = scaledDifference + 128;
 
-        System.out.println("Circle Time -> " + circleHitTime + " Start Time -> " + timeFromStart + " result -> " + scaled_Value);
+//        System.out.println("Circle Time -> " + circleHitTime + " Start Time -> " + timeFromStart + " result -> " + scaled_Value); // TODO: 08.08.2023
 
 
         return (int) scaled_Value;
