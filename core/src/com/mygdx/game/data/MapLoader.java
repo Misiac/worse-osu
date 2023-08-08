@@ -21,6 +21,9 @@ public class MapLoader {
 
         List<HitObject> testData = new ArrayList<>(List.of(hitCircle1, hitCircle2, hitCircle3, hitCircle4, hitCircle5));
 
+
+
+
         return new Map(testData);
 
     }

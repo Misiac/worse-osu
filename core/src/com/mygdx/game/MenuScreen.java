@@ -22,6 +22,7 @@ public class MenuScreen implements Screen {
         this.game = game;
         playButton = new Texture("play.png");
         exitButton = new Texture("play.png"); // TODO: 07.08.2023
+
     }
 
     @Override
@@ -41,12 +42,15 @@ public class MenuScreen implements Screen {
         game.batch.end();
 
         if (Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > x && Game.HEIGHT - Gdx.input.getY() < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && Gdx.input.getY() > PLAY_BUTTON_Y) {
-            if (Gdx.input.isTouched()){
+            if (Gdx.input.isTouched()) {
                 this.dispose();
+
                 game.setScreen(new GameScreen(game));
             }
         }
-
+        if (game.files.isEmpty()){
+            System.out.println("empty");
+        }else System.out.println("not enpty");
 
     }
 

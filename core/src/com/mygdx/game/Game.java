@@ -2,11 +2,15 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.List;
+
 public class Game extends com.badlogic.gdx.Game {
 
     public static final int WIDTH = 1920;
     public static final int HEIGHT = 1080;
     public SpriteBatch batch;
+
+    public List<String> files;
 
     @Override
     public void create() {
@@ -15,6 +19,10 @@ public class Game extends com.badlogic.gdx.Game {
         System.out.println("test");
 
 
+    }
+
+    public Game(List<String> files) {
+        this.files = files;
     }
 
     @Override
