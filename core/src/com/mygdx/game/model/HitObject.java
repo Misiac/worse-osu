@@ -3,7 +3,7 @@ package com.mygdx.game.model;
 public abstract class HitObject {
     int osuPixelX;
     int osuPixelY;
-    int time;
+    long time;
     int type;
 
     public HitObject(int osuPixelX, int osuPixelY, int time, int type) {
@@ -21,7 +21,7 @@ public abstract class HitObject {
         return osuPixelY;
     }
 
-    public int getTime() {
+    public long getTime() {
         return time;
     }
 

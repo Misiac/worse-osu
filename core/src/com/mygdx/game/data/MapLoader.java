@@ -14,7 +14,7 @@ public class MapLoader {
         // test data
 
         HitCircle hitCircle1 = new HitCircle(201, 138, 705);
-        HitCircle hitCircle2 = new HitCircle(201, 138, 863);
+        HitCircle hitCircle2 = new HitCircle(400, 123, 863);
         HitCircle hitCircle3 = new HitCircle(288, 155, 1181);
         HitCircle hitCircle4 = new HitCircle(195, 267, 1736);
         HitCircle hitCircle5 = new HitCircle(299, 127, 2689);
