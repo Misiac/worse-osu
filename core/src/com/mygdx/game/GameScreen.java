@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.data.MapLoader;
 import com.mygdx.game.model.CircleNumber;
 import com.mygdx.game.model.HitObject;
@@ -21,18 +23,23 @@ public class GameScreen implements Screen {
 
     Game game;
     Sound sound;
+
     public static final long AR_OFFSET = 900;
+    public static final int OBJECT_SIDE_LENGTH = 128;
+    public static final int NUMBER_OBJECT_LENGTH = 50;
+    private static final int CIRCLE_CURSOR_OFFSET = OBJECT_SIDE_LENGTH / 2 - NUMBER_OBJECT_LENGTH / 2;
+
     public int hitObjectScale;
     public List<HitObject> currentHitObjects = new LinkedList<>();
-
     public static int resolutionMultiplierX;
     public static int resolutionMultiplierY;
     long startTimeReference;
     long timeFromStart;
     Map map;
-    public static final int OBJECT_SIDE_LENGTH = 128;
-    public static final int NUMBER_OBJECT_LENGTH = 50;
-    private static final int CIRCLE_CURSOR_OFFSET = OBJECT_SIDE_LENGTH / 2 - NUMBER_OBJECT_LENGTH / 2;
+    int combo = 0;
+    BitmapFont bitmapFont;
+    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
+    FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
 
     public GameScreen(Game game) {
@@ -49,6 +56,11 @@ public class GameScreen implements Screen {
         Gdx.graphics.setCursor(cursor);
 
         startTimeReference = System.currentTimeMillis();
+
+        parameter.size = 80;
+        bitmapFont = generator.generateFont(parameter);
+        generator.dispose();
+
     }
 
     @Override
@@ -67,46 +79,58 @@ public class GameScreen implements Screen {
         Texture approachCircle = new Texture(Gdx.files.internal("approachcircle.png"));
 
 
+        filterHitObjects();
+
         game.batch.begin();
 
-        int testCounter = 0; // TODO: 08.08.2023
+        bitmapFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        bitmapFont.draw(game.batch, combo+"x", 5, 70);
         int approachCircleScale;
 
-        for (HitObject hitObject : map.getHitObjects()) {
+        for (HitObject hitObject : currentHitObjects) {
 
-            if (timeFromStart > hitObject.getTime() - AR_OFFSET && timeFromStart < hitObject.getTime()) {
+            Texture circleNumber = new Texture(Gdx.files.internal(
+                    CircleNumber.valueOf("N" + 1).getPath()
+            ));
+            int calculatedX = hitObject.getOsuPixelX() * resolutionMultiplierX;
+            int calculatedY = hitObject.getOsuPixelY() * resolutionMultiplierY;
 
-                if (!currentHitObjects.contains(hitObject)) currentHitObjects.add(hitObject);
+            game.batch.draw(hitCircle, calculatedX, calculatedY);
+            game.batch.draw(hitCircleOverlay, calculatedX, calculatedY);
 
-                Texture circleNumber = new Texture(Gdx.files.internal(
-                        CircleNumber.valueOf("N" + testCounter).getPath()
-                ));
-                int calculatedX = hitObject.getOsuPixelX() * resolutionMultiplierX;
-                int calculatedY = hitObject.getOsuPixelY() * resolutionMultiplierY;
+            approachCircleScale = calculateApproachScale(timeFromStart, hitObject.getTime());
+            hitObjectScale = OBJECT_SIDE_LENGTH / 2 - approachCircleScale / 2;
+            game.batch.draw(approachCircle, calculatedX + hitObjectScale, calculatedY + hitObjectScale, approachCircleScale, approachCircleScale);
 
-                game.batch.draw(hitCircle, calculatedX, calculatedY);
-                game.batch.draw(hitCircleOverlay, calculatedX, calculatedY);
+            game.batch.draw(circleNumber, calculatedX + CIRCLE_CURSOR_OFFSET, calculatedY + CIRCLE_CURSOR_OFFSET);   // 128:2 - 25/2
 
-                approachCircleScale = calculateApproachScale(timeFromStart, hitObject.getTime());
-                hitObjectScale = OBJECT_SIDE_LENGTH / 2 - approachCircleScale / 2;
-                game.batch.draw(approachCircle, calculatedX + hitObjectScale, calculatedY + hitObjectScale, approachCircleScale, approachCircleScale);
-
-                game.batch.draw(circleNumber, calculatedX + CIRCLE_CURSOR_OFFSET, calculatedY + CIRCLE_CURSOR_OFFSET);   // 128:2 - 25/2
-            }
-            testCounter++;
         }
-//        System.out.println("------------");
-
 
         game.batch.end();
 
 
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
 
             for (HitObject hitObject : currentHitObjects) {
                 boolean wasPressed = checkIfObjectsWasPressed(hitObject.getOsuPixelX() * resolutionMultiplierX,
                         hitObject.getOsuPixelY() * resolutionMultiplierY);
 
+            }
+        }
+
+    }
+
+    private void filterHitObjects() {
+
+        for (HitObject hitObject : map.getHitObjects()) {
+
+            if (timeFromStart > hitObject.getTime() - AR_OFFSET && timeFromStart < hitObject.getTime()) {
+                if (!currentHitObjects.contains(hitObject)) {
+                    currentHitObjects.add(hitObject);
+                }
+            }
+            if (timeFromStart > hitObject.getTime()) {
+                currentHitObjects.remove(hitObject);
             }
         }
 
@@ -124,6 +148,7 @@ public class GameScreen implements Screen {
         if (distance < 64) {
             System.out.println("REGISTERED CLICK");
             System.out.println(distance);
+            combo++;
             return true;
 
         }
