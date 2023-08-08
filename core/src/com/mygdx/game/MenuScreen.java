@@ -16,12 +16,15 @@ public class MenuScreen implements Screen {
     private static final int PLAY_BUTTON_HEIGHT = 340;
     public static final int EXIT_BUTTON_Y = 100;
     public static final int PLAY_BUTTON_Y = 300;
+    Texture background;
 
 
     public MenuScreen(Game game) {
         this.game = game;
         playButton = new Texture("play.png");
         exitButton = new Texture("play.png"); // TODO: 07.08.2023
+
+        background = new Texture(Gdx.files.internal("menubg.png"));
 
     }
 
@@ -38,19 +41,22 @@ public class MenuScreen implements Screen {
         int x = Game.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2;
 
         game.batch.begin();
+        game.batch.draw(background,0,0);
         game.batch.draw(playButton, x, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
         game.batch.end();
 
         if (Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > x && Game.HEIGHT - Gdx.input.getY() < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && Gdx.input.getY() > PLAY_BUTTON_Y) {
             if (Gdx.input.isTouched()) {
                 this.dispose();
-
                 game.setScreen(new GameScreen(game));
             }
         }
-        if (game.files.isEmpty()){
-            System.out.println("empty");
-        }else System.out.println("not enpty");
+        if (game.files.isEmpty()) { // file drop listener
+
+        } else {
+            this.dispose();
+            game.setScreen(new GameScreen(game));
+        }
 
     }
 

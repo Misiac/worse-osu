@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
@@ -29,12 +28,10 @@ public class DesktopLauncher {
             @Override
             public void filesDropped(String[] files) {
                 for (String file : files) {
-                    Gdx.app.log("GLWF Drop", file);
-                test.addFile(file);
+                    test.addFile(file);
                 }
             }
         });
-
         new Lwjgl3Application(new Game(files), config);
     }
 }
