@@ -18,10 +18,9 @@ import java.util.List;
 
 public class GameScreen implements Screen {
 
+
     Game game;
     Sound sound;
-    private int circleX = 240;
-    private int circleY = 240;
     public static final long AR_OFFSET = 900;
     public int hitObjectScale;
     public List<HitObject> currentHitObjects = new LinkedList<>();
@@ -31,14 +30,17 @@ public class GameScreen implements Screen {
     long startTimeReference;
     long timeFromStart;
     Map map;
+    public static final int OBJECT_SIDE_LENGTH = 128;
+    public static final int NUMBER_OBJECT_LENGTH = 50;
+    private static final int CIRCLE_CURSOR_OFFSET = OBJECT_SIDE_LENGTH / 2 - NUMBER_OBJECT_LENGTH / 2;
 
 
     public GameScreen(Game game) {
         this.game = game;
         sound = Gdx.audio.newSound(Gdx.files.internal("song.mp3"));
 //        sound.play();
-        resolutionMultiplierX = Gdx.graphics.getWidth() / 640;
-        resolutionMultiplierY = Gdx.graphics.getHeight() / 480;
+        resolutionMultiplierX = Gdx.graphics.getWidth() / 640;  // 640 is default for osuPixel X in osu file format
+        resolutionMultiplierY = Gdx.graphics.getHeight() / 480; // same but for Y
         this.map = MapLoader.Load();
 
         Pixmap pm = new Pixmap(Gdx.files.internal("cursor.png"));
@@ -81,16 +83,15 @@ public class GameScreen implements Screen {
                 ));
                 int calculatedX = hitObject.getOsuPixelX() * resolutionMultiplierX;
                 int calculatedY = hitObject.getOsuPixelY() * resolutionMultiplierY;
-//                System.out.println("calculated X -> " + calculatedX + " calculated Y -> " + calculatedY) ;
 
                 game.batch.draw(hitCircle, calculatedX, calculatedY);
                 game.batch.draw(hitCircleOverlay, calculatedX, calculatedY);
 
                 approachCircleScale = calculateApproachScale(timeFromStart, hitObject.getTime());
-                hitObjectScale = 128 / 2 - approachCircleScale / 2;
+                hitObjectScale = OBJECT_SIDE_LENGTH / 2 - approachCircleScale / 2;
                 game.batch.draw(approachCircle, calculatedX + hitObjectScale, calculatedY + hitObjectScale, approachCircleScale, approachCircleScale);
 
-                game.batch.draw(circleNumber, calculatedX + 39, calculatedY + 39);   // 128:2 - 25/2
+                game.batch.draw(circleNumber, calculatedX + CIRCLE_CURSOR_OFFSET, calculatedY + CIRCLE_CURSOR_OFFSET);   // 128:2 - 25/2
             }
             testCounter++;
         }
@@ -117,7 +118,7 @@ public class GameScreen implements Screen {
         int inputY = Math.abs(Gdx.input.getY() - Gdx.graphics.getHeight()); // Y 0 for cursor is top screen but for textures is down so there is a need for conversion
 
         double distance = Math.sqrt(
-                Math.pow(x - (inputX-64), 2) + Math.pow(y - (inputY-64), 2)
+                Math.pow(x - (inputX - 64), 2) + Math.pow(y - (inputY - 64), 2)
         );
         System.out.println("distance -> " + distance + " gdxX -> " + inputX + " gdxY -> " + inputY + " circleX -> " + x + " circleY -> " + y);
         if (distance < 64) {
