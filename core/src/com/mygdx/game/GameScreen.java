@@ -7,6 +7,10 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.data.MapLoader;
+import com.mygdx.game.model.CircleNumber;
+import com.mygdx.game.model.HitObject;
+import com.mygdx.game.model.Map;
 
 public class GameScreen implements Screen {
 
@@ -15,11 +19,16 @@ public class GameScreen implements Screen {
     private int circleX = 240;
     private int circleY = 240;
 
+    public static int resolutionMultiplier;
+    Map map;
+
 
     public GameScreen(Game game) {
         this.game = game;
         sound = Gdx.audio.newSound(Gdx.files.internal("song.mp3"));
 //        sound.play();
+        resolutionMultiplier = Gdx.graphics.getWidth() / 640;
+        this.map = MapLoader.Load();
     }
 
     @Override
@@ -40,13 +49,28 @@ public class GameScreen implements Screen {
         Texture hitCircle = new Texture(Gdx.files.internal("hitcircle.png"));
         Texture hitCircleOverlay = new Texture(Gdx.files.internal("hitcircleoverlay.png"));
         Texture approachCircle = new Texture(Gdx.files.internal("approachcircle.png"));
-        Texture circleNumber = new Texture(Gdx.files.internal("numbers/default-0.png"));
+
 
         game.batch.begin();
-        game.batch.draw(hitCircle, circleX, circleY);
-        game.batch.draw(hitCircleOverlay, circleX, circleY);
-        game.batch.draw(approachCircle, circleX, circleY);
-        game.batch.draw(circleNumber, circleX+39, circleY+39);   // 128:2 - 25/2
+
+
+        for (HitObject hitObject : map.getHitObjects()) {
+
+            Texture circleNumber = new Texture(Gdx.files.internal(
+                    CircleNumber.valueOf("N"+1).getPath()
+            ));
+            int calculatedX = hitObject.getOsuPixelX()*resolutionMultiplier;
+            int calculatedY = hitObject.getOsuPixelY()*resolutionMultiplier;
+
+            game.batch.draw(hitCircle,calculatedX,calculatedY);
+            game.batch.draw(hitCircleOverlay, calculatedX, calculatedY);
+            game.batch.draw(approachCircle, calculatedX, calculatedY);
+            game.batch.draw(circleNumber, calculatedX + 39, calculatedY + 39);   // 128:2 - 25/2
+
+        }
+
+
+
         game.batch.end();
 
     }
