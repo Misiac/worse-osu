@@ -5,17 +5,23 @@ import java.util.List;
 
 public class Map {
 
-   private List<HitObject> hitObjects = new ArrayList<>();
+    private List<Mapset> mapsets = new ArrayList<>();
 
-    public Map(List<HitObject> hitObjects) {
-        this.hitObjects = hitObjects;
+    public List<Mapset> getMapsets() {
+        return mapsets;
     }
 
-    public List<HitObject> getHitObjects() {
-        return hitObjects;
+    public void setMapsets(List<Mapset> mapsets) {
+        this.mapsets = mapsets;
     }
 
-    public void setHitObjects(List<HitObject> hitObjects) {
-        this.hitObjects = hitObjects;
+    public Map(List<Mapset> mapsets) {
+        this.mapsets = mapsets;
     }
+
+    public Map(Mapset mapset) {
+        this.mapsets.add(mapset);
+    }
+
+
 }

@@ -121,7 +121,7 @@ public class GameScreen implements Screen {
 
     private void filterHitObjects() {
 
-        for (HitObject hitObject : map.getHitObjects()) {
+        for (HitObject hitObject : map.getMapsets().get(0).getHitObjects()) {
 
             if (timeFromStart > hitObject.getTime() - AR_OFFSET && timeFromStart < hitObject.getTime()) {
                 if (!currentHitObjects.contains(hitObject)) {

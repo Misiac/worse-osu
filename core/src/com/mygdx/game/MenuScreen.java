@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.data.MapLoader;
 import com.mygdx.game.model.Map;
 
+import java.io.IOException;
+
 public class MenuScreen implements Screen {
 
     Game game;
@@ -66,8 +68,13 @@ public class MenuScreen implements Screen {
                     this.dispose();
                     if (isProperOszFile(game.files.get(game.files.size() - 1))) {
                         // load map here
-                        Map loadedMap = MapLoader.Load(game.files.get(game.files.size() - 1));
-                        game.setScreen(new GameScreen(game));
+                        try {
+                            Map loadedMap = MapLoader.Load(game.files.get(game.files.size() - 1));
+                            game.setScreen(new GameScreen(game));
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                        }
+
                     }
                 }
 

@@ -3,6 +3,7 @@ package com.mygdx.game.data;
 import com.mygdx.game.model.HitCircle;
 import com.mygdx.game.model.HitObject;
 import com.mygdx.game.model.Map;
+import com.mygdx.game.model.Mapset;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -34,18 +35,14 @@ public class MapLoader {
 
         List<HitObject> testData = new ArrayList<>(List.of(hitCircle1, hitCircle2, hitCircle3, hitCircle4, hitCircle5));
 
-        return new Map(testData);
+        return new Map(new Mapset(testData));
     }
 
-    public static Map Load(String path) {
+    public static Map Load(String path) throws IOException {
 
-        try {
-            unzipFile(path);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
 
-        }
+        unzipFile(path);
+
 
         return null;
     }
