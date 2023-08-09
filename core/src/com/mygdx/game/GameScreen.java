@@ -15,6 +15,7 @@ import com.mygdx.game.model.CircleNumber;
 import com.mygdx.game.model.HitObject;
 import com.mygdx.game.model.Map;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,13 +43,15 @@ public class GameScreen implements Screen {
     FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
 
-    public GameScreen(Game game) {
+    public GameScreen(Game game) throws IOException {  // TODO: 09.08.2023 throws
         this.game = game;
-        sound = Gdx.audio.newSound(Gdx.files.internal("song.mp3"));
-//        sound.play();
+
+
         resolutionMultiplierX = Gdx.graphics.getWidth() / 640;  // 640 is default for osuPixel X in osu file format
         resolutionMultiplierY = Gdx.graphics.getHeight() / 480; // same but for Y
-        this.map = MapLoader.Load();
+        this.map = MapLoader.Load(game.files.get(game.files.size() - 1));
+        System.out.println();
+        sound = Gdx.audio.newSound(Gdx.files.internal(map.getAudioPath()));
 
         Pixmap pm = new Pixmap(Gdx.files.internal("cursor.png"));
         Cursor cursor = Gdx.graphics.newCursor(pm, 64, 64);
@@ -61,6 +64,7 @@ public class GameScreen implements Screen {
         bitmapFont = generator.generateFont(parameter);
         generator.dispose();
 
+        sound.play(0.05f);
     }
 
     @Override
@@ -108,7 +112,7 @@ public class GameScreen implements Screen {
         game.batch.end();
 
 
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.G)) {
 
             for (HitObject hitObject : currentHitObjects) {
                 boolean wasPressed = checkIfObjectsWasPressed(hitObject.getOsuPixelX() * resolutionMultiplierX,

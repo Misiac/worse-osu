@@ -6,7 +6,7 @@ public abstract class HitObject {
     long time;
     int type;
 
-    public HitObject(int osuPixelX, int osuPixelY, int time, int type) {
+    public HitObject(int osuPixelX, int osuPixelY, long time, int type) {
         this.osuPixelX = osuPixelX;
         this.osuPixelY = osuPixelY;
         this.time = time;

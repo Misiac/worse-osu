@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.data.MapLoader;
-import com.mygdx.game.model.Map;
 
 import java.io.IOException;
 
@@ -69,28 +68,22 @@ public class MenuScreen implements Screen {
                     if (isProperOszFile(game.files.get(game.files.size() - 1))) {
                         // load map here
                         try {
-                            Map loadedMap = MapLoader.Load(game.files.get(game.files.size() - 1));
                             game.setScreen(new GameScreen(game));
                         } catch (IOException e) {
                             System.out.println(e.getMessage());
                         }
-
                     }
                 }
-
             }
         }
 
     }
 
     private boolean isProperOszFile(String path) {
-        int lastDotIndex = path.lastIndexOf(".");
 
-        if (lastDotIndex != -1 && lastDotIndex < path.length() - 1) {
-            String extension = path.substring(lastDotIndex + 1);
-            if (extension.equals("osz")) {
-                return true;
-            }
+        String extension = MapLoader.getExtension(path);
+        if (extension.equals("osz")) {
+            return true;
         }
         return false;
     }
