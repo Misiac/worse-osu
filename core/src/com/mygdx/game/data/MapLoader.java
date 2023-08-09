@@ -12,12 +12,17 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class MapLoader {
 
     private static final String TEMPORARY_DIRECTORY_PATH = System.getProperty("java.io.tmpdir") + "osuclonemap";
+
+    public static void main(String[] args) {
+        System.out.println(TEMPORARY_DIRECTORY_PATH);
+    }
 
     private MapLoader() {
         // do no create instance
@@ -40,12 +45,31 @@ public class MapLoader {
 
     public static Map Load(String path) throws IOException {
 
-
         unzipFile(path);
+
+        java.util.Map<String, String> filesMap = filterFilter();
 
 
         return null;
     }
+
+    private static java.util.Map<String, String> filterFilter() {
+
+        List<File> mapFiles = List.of(Objects.requireNonNull(new File(TEMPORARY_DIRECTORY_PATH).listFiles()));
+
+        for (File mapFile : mapFiles) {
+            if (!mapFile.isDirectory()) {
+                String extension = getExtension(mapFile.getPath());
+            }
+
+        }
+
+    }
+
+    private static String getExtension(String path) {
+
+    }
+
 
     private static void unzipFile(String path) throws IOException {
         File destDir = new File(TEMPORARY_DIRECTORY_PATH + File.separator);
