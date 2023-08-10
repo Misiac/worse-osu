@@ -26,6 +26,7 @@ public class GameScreen implements Screen {
     Game game;
     Sound music;
     Sound hitsound;
+    Sound comboBreak;
 
     public static final long AR_OFFSET = 900;
     public static final int OBJECT_SIDE_LENGTH = 128;
@@ -99,6 +100,7 @@ public class GameScreen implements Screen {
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         music = Gdx.audio.newSound(Gdx.files.internal(map.getAudioPath()));
         hitsound = Gdx.audio.newSound(Gdx.files.internal("hitsound.ogg"));
+        comboBreak = Gdx.audio.newSound(Gdx.files.internal("combobreak.wav"));
 
         futureHitObjects.addAll(map.getMapsets().get(0).getHitObjects()); // add all objects at start from source
 
@@ -201,9 +203,11 @@ public class GameScreen implements Screen {
         listIterator = currentHitObjects.listIterator();
         while (listIterator.hasNext()) { // filters currently rendered objects into past ones if they are after their time
             HitObject hitObject = listIterator.next();
-            if (timeFromStart >= hitObject.getTime()) { // if is after being rendered
+            if (timeFromStart >= hitObject.getTime()) { // if is after being rendered (MISS)
                 listIterator.remove();
                 pastHitObjects.add(hitObject);
+                comboBreak.play();
+                combo = 0; // reset combo
                 System.out.println("miss");
             }
         }
