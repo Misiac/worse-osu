@@ -40,6 +40,10 @@ public class GameScreen implements Screen {
     public List<HitObject> currentHitObjects = new LinkedList<>();
     public static int resolutionMultiplierX;
     public static int resolutionMultiplierY;
+    public static int xOffset;
+    public static int yOffset;
+    int newHeight;
+    int newWidth;
     long startTimeReference;
     long timeFromStart;
     Map map;
@@ -52,10 +56,20 @@ public class GameScreen implements Screen {
     public GameScreen(Game game) throws IOException {  // TODO: 09.08.2023 throws
         this.game = game;
 
+        newWidth = (int) (640 * (Gdx.graphics.getHeight() / 480.0)); // works and is 1440
+        newHeight = (int) (480 * (Gdx.graphics.getHeight() / 480.0)); // works and is 1440
 
-        resolutionMultiplierX = Gdx.graphics.getWidth() / 640;  // 640 is default for osuPixel X in osu file format
-        resolutionMultiplierY = Gdx.graphics.getHeight() / 480; // same but for Y
-        this.map = MapLoader.Load(game.files.get(game.files.size() - 1));
+        xOffset = ((Gdx.graphics.getWidth() - newWidth) / 2); //
+        yOffset = ((Gdx.graphics.getHeight() - newHeight) / 2);
+
+        resolutionMultiplierX = (int) (Gdx.graphics.getWidth() / 640);  // 640 is default for osuPixel X in osu file format
+        resolutionMultiplierY = (int) (Gdx.graphics.getHeight()/ 480); // same but for Y
+
+        System.out.println("NEWXZERO -> " + xOffset + " NEWYZERO -> " + yOffset);
+
+        this.map = MapLoader.Load(game.files.get(0));
+
+        System.out.println("NEW HEIGHT: " + newHeight);
         System.out.println();
         sound = Gdx.audio.newSound(Gdx.files.internal(map.getAudioPath()));
 
@@ -96,13 +110,14 @@ public class GameScreen implements Screen {
         bitmapFont.draw(game.batch, combo + "x", 5, 70);
         int approachCircleScale;
 
+
         for (HitObject hitObject : currentHitObjects) {
 
             Texture circleNumber = new Texture(Gdx.files.internal(
                     CircleNumber.valueOf("N" + 1).getPath()
             ));
-            int calculatedX = hitObject.getOsuPixelX() * resolutionMultiplierX;
-            int calculatedY = hitObject.getOsuPixelY() * resolutionMultiplierY;
+            int calculatedX = calculateObjectXPosition(hitObject.getOsuPixelX());
+            int calculatedY = calculateObjectYPosition(hitObject.getOsuPixelY());
 
             game.batch.draw(hitCircle, calculatedX, calculatedY);
             game.batch.draw(hitCircleOverlay, calculatedX, calculatedY);
@@ -121,46 +136,59 @@ public class GameScreen implements Screen {
         if (checkIfUserHasClicked()) {
 
             for (HitObject hitObject : currentHitObjects) {
-                boolean wasPressed = checkIfObjectsWasPressed(hitObject.getOsuPixelX() * resolutionMultiplierX,
-                        hitObject.getOsuPixelY() * resolutionMultiplierY);
+                boolean wasPressed = checkIfObjectsWasPressed(calculateObjectXPosition(hitObject.getOsuPixelX()),
+                        calculateObjectYPosition(hitObject.getOsuPixelY()));
+                System.out.println(Gdx.input.getX() + " X ");
+//                System.out.println(Math.abs() + " Y");
 
             }
         }
 
     }
 
+    private int calculateObjectXPosition(int osuPixelX) {
+        return (int) ((osuPixelX * 2.25) + xOffset); // output should be between 240 and 1696
+
+        // osuPixelX * resolutionMultiplierX
+    }
+
+    private int calculateObjectYPosition(int osuPixelY) {
+        return Math.abs(osuPixelY * resolutionMultiplierX - newHeight);
+    }
+
     private boolean checkIfUserHasClicked() {
-        boolean result = Gdx.input.isKeyJustPressed(KEYBOARD_KEY_ONE) || Gdx.input.isKeyJustPressed(KEYBOARD_KEY_TWO)
+        return Gdx.input.isKeyJustPressed(KEYBOARD_KEY_ONE) || Gdx.input.isKeyJustPressed(KEYBOARD_KEY_TWO)
                 || Gdx.input.isButtonJustPressed(MOUSE_BUTTON_ONE) || Gdx.input.isButtonJustPressed(MOUSE_BUTTON_TWO);
-        System.out.println(result);
-        return result;
     }
 
     private void filterHitObjects() {
-
-        for (HitObject hitObject : map.getMapsets().get(0).getHitObjects()) {
+//        System.out.println(map.getMapsets().get(2).getVersion()); // TODO: 10.08.2023
+        for (HitObject hitObject : map.getMapsets().get(2).getHitObjects()) {
 
             if (timeFromStart > hitObject.getTime() - AR_OFFSET && timeFromStart < hitObject.getTime()) {
                 if (!currentHitObjects.contains(hitObject)) {
                     currentHitObjects.add(hitObject);
+                    System.out.println("X POSITION -> " + calculateObjectXPosition(hitObject.getOsuPixelX()) + " Y POSITION -> " + calculateObjectYPosition(hitObject.getOsuPixelY()));
+                    
                 }
             }
             if (timeFromStart > hitObject.getTime()) {
                 currentHitObjects.remove(hitObject);
             }
         }
+//        System.out.println("X OFFSET -> " + xOffset); // TODO: 10.08.2023
 
     }
 
     private boolean checkIfObjectsWasPressed(int x, int y) {
 
         int inputX = Gdx.input.getX();
-        int inputY = Math.abs(Gdx.input.getY() - Gdx.graphics.getHeight()); // Y 0 for cursor is top screen but for textures is down so there is a need for conversion
+        int inputY = Math.abs(Gdx.input.getY() - newHeight); // Y 0 for cursor is top screen but for textures is down so there is a need for conversion
 
         double distance = Math.sqrt(
                 Math.pow(x - (inputX - 64), 2) + Math.pow(y - (inputY - 64), 2)
         );
-        System.out.println("distance -> " + distance + " gdxX -> " + inputX + " gdxY -> " + inputY + " circleX -> " + x + " circleY -> " + y);
+        System.out.println("distance -> " + distance + " gdxX -> " + inputX + " gdxY -> " + inputY + " circleX -> " + x + " circleY -> " + y); // TODO: 10.08.2023
         if (distance < 64) {
             System.out.println("REGISTERED CLICK");
             System.out.println(distance);
