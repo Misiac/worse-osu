@@ -51,6 +51,10 @@ public class GameScreen implements Screen {
     FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
     FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
+    Texture hitCircle = new Texture(Gdx.files.internal("hitcircle.png"));
+    Texture hitCircleOverlay = new Texture(Gdx.files.internal("hitcircleoverlay.png"));
+    Texture approachCircle = new Texture(Gdx.files.internal("approachcircle.png"));
+
 
     public GameScreen(Game game) throws IOException {  // TODO: 09.08.2023 throws
         this.game = game;
@@ -63,12 +67,7 @@ public class GameScreen implements Screen {
 
         resolutionMultiplierY =(Gdx.graphics.getHeight()/ 480.0); // same but for Y
 
-        System.out.println("NEWXZERO -> " + xOffset + " NEWYZERO -> " + yOffset);
-
         this.map = MapLoader.Load(game.files.get(0));
-
-        System.out.println("NEW HEIGHT: " + newHeight);
-        System.out.println();
         sound = Gdx.audio.newSound(Gdx.files.internal(map.getAudioPath()));
 
         Pixmap pm = new Pixmap(Gdx.files.internal("cursor.png"));
@@ -96,10 +95,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         timeFromStart = System.currentTimeMillis() - startTimeReference;
 
-        Texture hitCircle = new Texture(Gdx.files.internal("hitcircle.png"));
-        Texture hitCircleOverlay = new Texture(Gdx.files.internal("hitcircleoverlay.png"));
-        Texture approachCircle = new Texture(Gdx.files.internal("approachcircle.png"));
-
         filterHitObjects();
 
         game.batch.begin();
@@ -110,7 +105,7 @@ public class GameScreen implements Screen {
 
         for (HitObject hitObject : currentHitObjects) {
 
-            Texture circleNumber = new Texture(Gdx.files.internal(
+            Texture circleNumber = new Texture(Gdx.files.internal( // maybe preload all numbers from 0-9?
                     CircleNumber.valueOf("N" + 1).getPath()
             ));
             int calculatedX = calculateObjectXPosition(hitObject.getOsuPixelX());
