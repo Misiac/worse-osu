@@ -57,10 +57,10 @@ public class GameScreen implements Screen {
         this.game = game;
 
         newWidth = (int) (640 * (Gdx.graphics.getHeight() / 480.0)); // works and is 1440
-        newHeight = (int) (480 * (Gdx.graphics.getHeight() / 480.0)); // works and is 1440
+        newHeight = (int) (480 * (Gdx.graphics.getHeight() / 480.0)); // works and is 1080
 
-        xOffset = ((Gdx.graphics.getWidth() - newWidth) / 2); //
-        yOffset = ((Gdx.graphics.getHeight() - newHeight) / 2);
+        xOffset = ((Gdx.graphics.getWidth() - newWidth) / 2) + 64; // maximum object x property is 512
+        yOffset = 48; // maximum object y property is 384
 
         resolutionMultiplierX = (int) (Gdx.graphics.getWidth() / 640);  // 640 is default for osuPixel X in osu file format
         resolutionMultiplierY = (int) (Gdx.graphics.getHeight()/ 480); // same but for Y
@@ -119,6 +119,7 @@ public class GameScreen implements Screen {
             int calculatedX = calculateObjectXPosition(hitObject.getOsuPixelX());
             int calculatedY = calculateObjectYPosition(hitObject.getOsuPixelY());
 
+
             game.batch.draw(hitCircle, calculatedX, calculatedY);
             game.batch.draw(hitCircleOverlay, calculatedX, calculatedY);
 
@@ -138,8 +139,7 @@ public class GameScreen implements Screen {
             for (HitObject hitObject : currentHitObjects) {
                 boolean wasPressed = checkIfObjectsWasPressed(calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY()));
-                System.out.println(Gdx.input.getX() + " X ");
-//                System.out.println(Math.abs() + " Y");
+                System.out.println(Gdx.input.getY() + "  --Y ");
 
             }
         }
@@ -147,13 +147,13 @@ public class GameScreen implements Screen {
     }
 
     private int calculateObjectXPosition(int osuPixelX) {
-        return (int) ((osuPixelX * 2.25) + xOffset); // output should be between 240 and 1696
+        return (int) ((osuPixelX * 2.25) + xOffset);
 
         // osuPixelX * resolutionMultiplierX
     }
 
     private int calculateObjectYPosition(int osuPixelY) {
-        return Math.abs(osuPixelY * resolutionMultiplierX - newHeight);
+        return (int) Math.abs((osuPixelY * 2.25 + yOffset) - Gdx.graphics.getHeight()) - yOffset*3;
     }
 
     private boolean checkIfUserHasClicked() {
