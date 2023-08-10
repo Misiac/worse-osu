@@ -186,6 +186,19 @@ public class GameScreen implements Screen {
         currentHitObjects.remove(hitObject);
         hitsound.play(EFFECT_VOLUME);
         combo++;
+
+        long difference = hitObject.getTime() - timeFromStart;
+        if (difference > 120) {
+            if (difference > 180) {
+                visualEffects.add(new VisualEffect(hit50,
+                        calculateObjectXPosition(hitObject.getOsuPixelX()),
+                        calculateObjectYPosition(hitObject.getOsuPixelY())));
+            } else {
+                visualEffects.add(new VisualEffect(hit100,
+                        calculateObjectXPosition(hitObject.getOsuPixelX()),
+                        calculateObjectYPosition(hitObject.getOsuPixelY())));
+            }
+        }
     }
 
     private int calculateObjectXPosition(int osuPixelX) { // calculates x property from osu pixel format to current user resolution
