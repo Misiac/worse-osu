@@ -30,6 +30,12 @@ public class GameScreen implements Screen {
     public static final int NUMBER_OBJECT_LENGTH = 50;
     private static final int CIRCLE_CURSOR_OFFSET = OBJECT_SIDE_LENGTH / 2 - NUMBER_OBJECT_LENGTH / 2;
 
+    private static final int KEYBOARD_KEY_ONE = Input.Keys.Z;
+    private static final int KEYBOARD_KEY_TWO = Input.Keys.X;
+
+    public static final int MOUSE_BUTTON_ONE = Input.Buttons.LEFT;
+    public static final int MOUSE_BUTTON_TWO = Input.Buttons.RIGHT;
+
     public int hitObjectScale;
     public List<HitObject> currentHitObjects = new LinkedList<>();
     public static int resolutionMultiplierX;
@@ -87,7 +93,7 @@ public class GameScreen implements Screen {
         game.batch.begin();
 
         bitmapFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        bitmapFont.draw(game.batch, combo+"x", 5, 70);
+        bitmapFont.draw(game.batch, combo + "x", 5, 70);
         int approachCircleScale;
 
         for (HitObject hitObject : currentHitObjects) {
@@ -112,7 +118,7 @@ public class GameScreen implements Screen {
         game.batch.end();
 
 
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.G)) {
+        if (checkIfUserHasClicked()) {
 
             for (HitObject hitObject : currentHitObjects) {
                 boolean wasPressed = checkIfObjectsWasPressed(hitObject.getOsuPixelX() * resolutionMultiplierX,
@@ -121,6 +127,13 @@ public class GameScreen implements Screen {
             }
         }
 
+    }
+
+    private boolean checkIfUserHasClicked() {
+        boolean result = Gdx.input.isKeyJustPressed(KEYBOARD_KEY_ONE) || Gdx.input.isKeyJustPressed(KEYBOARD_KEY_TWO)
+                || Gdx.input.isButtonJustPressed(MOUSE_BUTTON_ONE) || Gdx.input.isButtonJustPressed(MOUSE_BUTTON_TWO);
+        System.out.println(result);
+        return result;
     }
 
     private void filterHitObjects() {
