@@ -14,6 +14,7 @@ import com.mygdx.game.data.MapLoader;
 import com.mygdx.game.model.CircleNumber;
 import com.mygdx.game.model.HitObject;
 import com.mygdx.game.model.Map;
+import com.mygdx.game.model.VisualEffect;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -45,6 +46,7 @@ public class GameScreen implements Screen {
     public List<HitObject> currentHitObjects = new LinkedList<>();
     public List<HitObject> pastHitObjects = new LinkedList<>();
     public List<HitObject> futureHitObjects = new LinkedList<>();
+    public List<VisualEffect> visualEffects = new LinkedList<>();
 
     public static double resolutionMultiplierY;
 
@@ -63,6 +65,9 @@ public class GameScreen implements Screen {
     Texture hitCircle;
     Texture hitCircleOverlay;
     Texture approachCircle;
+    Texture miss;
+    Texture hit50;
+    Texture hit100;
 
 
     public GameScreen(Game game) throws IOException {  // TODO: 09.08.2023 throws
@@ -102,6 +107,9 @@ public class GameScreen implements Screen {
         music = Gdx.audio.newSound(Gdx.files.internal(map.getAudioPath()));
         hitsound = Gdx.audio.newSound(Gdx.files.internal("hitsound.ogg"));
         comboBreak = Gdx.audio.newSound(Gdx.files.internal("combobreak.wav"));
+        miss = new Texture(Gdx.files.internal("hit0.png"));
+        hit50 = new Texture(Gdx.files.internal("hit50.png"));
+        hit100 = new Texture(Gdx.files.internal("hit100.png"));
 
         futureHitObjects.addAll(map.getMapsets().get(0).getHitObjects()); // add all objects at start from source
 
@@ -135,7 +143,6 @@ public class GameScreen implements Screen {
             int calculatedX = calculateObjectXPosition(hitObject.getOsuPixelX());
             int calculatedY = calculateObjectYPosition(hitObject.getOsuPixelY());
 
-
             game.batch.draw(hitCircle, calculatedX, calculatedY);
             game.batch.draw(hitCircleOverlay, calculatedX, calculatedY);
 
@@ -147,8 +154,19 @@ public class GameScreen implements Screen {
 
         }
 
-        game.batch.end();
+        ListIterator<VisualEffect> iterator = visualEffects.listIterator();
+        while (iterator.hasNext()) {
+            VisualEffect visualEffect = iterator.next();
+            if (visualEffect.getTimer() != 0) {
+                game.batch.draw(visualEffect.getTexture(), visualEffect.getXCoordinate(), visualEffect.getYCoordinate());
+                visualEffect.decrementTimer();
+            } else {
+                visualEffect = null;
+                iterator.remove();
+            }
+        }
 
+        game.batch.end();
 
         if (checkIfUserHasClicked()) {
 
@@ -209,6 +227,9 @@ public class GameScreen implements Screen {
                 pastHitObjects.add(hitObject);
                 comboBreak.play(EFFECT_VOLUME);
                 combo = 0; // reset combo
+                VisualEffect visualEffect = new VisualEffect(miss, calculateObjectXPosition(hitObject.getOsuPixelX()),
+                        calculateObjectYPosition(hitObject.getOsuPixelY()));
+                visualEffects.add(visualEffect);
                 System.out.println("miss");
             }
         }
@@ -226,9 +247,7 @@ public class GameScreen implements Screen {
         if (distance < 64) {
             System.out.println("REGISTERED CLICK");
             System.out.println(distance);
-
             return true;
-
         }
         return false;
     }

@@ -7,7 +7,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class DesktopLauncher {
     public static List<String> files = new LinkedList<>();
 
