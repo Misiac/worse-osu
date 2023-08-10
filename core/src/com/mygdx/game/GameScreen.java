@@ -160,13 +160,12 @@ public class GameScreen implements Screen {
         hitsound.play();
     }
 
-    private int calculateObjectXPosition(int osuPixelX) {
+    private int calculateObjectXPosition(int osuPixelX) { // calculates x property from osu pixel format to current user resolution
         return (int) ((osuPixelX * resolutionMultiplierY) + xOffset);
 
-        // osuPixelX * resolutionMultiplierX
     }
 
-    private int calculateObjectYPosition(int osuPixelY) {
+    private int calculateObjectYPosition(int osuPixelY) { // calculates y property from osu pixel format to current user resolution
         return (int) Math.abs((osuPixelY * resolutionMultiplierY + yOffset) - Gdx.graphics.getHeight()) - yOffset * 3;
     }
 
@@ -176,17 +175,19 @@ public class GameScreen implements Screen {
     }
 
     private void filterHitObjects() {
-        for (HitObject hitObject : map.getMapsets().get(2).getHitObjects()) {
+        for (HitObject hitObject : map.getMapsets().get(0).getHitObjects()) {
 
             if (!clickedHitObjects.contains(hitObject) && timeFromStart > hitObject.getTime() - AR_OFFSET && timeFromStart < hitObject.getTime()) {
                 if (!renderedHitObjects.contains(hitObject)) {
                     renderedHitObjects.add(hitObject);
                     System.out.println("X POSITION -> " + calculateObjectXPosition(hitObject.getOsuPixelX()) + " Y POSITION -> " + calculateObjectYPosition(hitObject.getOsuPixelY()));
-
+                    continue;
                 }
+
             }
-            if (timeFromStart > hitObject.getTime()) {
+            if (timeFromStart > hitObject.getTime() ) {
                 renderedHitObjects.remove(hitObject);
+                System.out.println("miss");
             }
             if (hitObject.getTime() > timeFromStart + AR_OFFSET) {
                 break;
