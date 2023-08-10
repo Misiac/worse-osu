@@ -22,7 +22,6 @@ import java.util.ListIterator;
 
 public class GameScreen implements Screen {
 
-
     Game game;
     Sound music;
     Sound hitsound;
@@ -38,6 +37,8 @@ public class GameScreen implements Screen {
 
     public static final int MOUSE_BUTTON_ONE = Input.Buttons.LEFT;
     public static final int MOUSE_BUTTON_TWO = Input.Buttons.RIGHT;
+    private static final float EFFECT_VOLUME = 0.5f;
+    private static final float MUSIC_VOLUME = 0.5f;
 
     public int hitObjectScale;
 
@@ -88,7 +89,7 @@ public class GameScreen implements Screen {
         bitmapFont = generator.generateFont(parameter);
         generator.dispose();
 
-        music.play(0.05f);
+        music.play(MUSIC_VOLUME);
     }
 
     private void prepareObjects() {
@@ -106,7 +107,6 @@ public class GameScreen implements Screen {
 
 
     }
-
 
     @Override
     public void show() {
@@ -163,10 +163,11 @@ public class GameScreen implements Screen {
         }
     }
 
-    private void handleHitObjectHit(HitObject hitObject) {
+    private void handleHitObjectHit(HitObject hitObject) { // circle was properly hit
         pastHitObjects.add(hitObject);
         currentHitObjects.remove(hitObject);
-        hitsound.play();
+        hitsound.play(EFFECT_VOLUME);
+        combo++;
     }
 
     private int calculateObjectXPosition(int osuPixelX) { // calculates x property from osu pixel format to current user resolution
@@ -206,7 +207,7 @@ public class GameScreen implements Screen {
             if (timeFromStart >= hitObject.getTime()) { // if is after being rendered (MISS)
                 listIterator.remove();
                 pastHitObjects.add(hitObject);
-                comboBreak.play();
+                comboBreak.play(EFFECT_VOLUME);
                 combo = 0; // reset combo
                 System.out.println("miss");
             }
@@ -224,9 +225,8 @@ public class GameScreen implements Screen {
         System.out.println("distance -> " + distance + " gdxX -> " + inputX + " gdxY -> " + inputY + " circleX -> " + x + " circleY -> " + y); // TODO: 10.08.2023
         if (distance < 64) {
             System.out.println("REGISTERED CLICK");
-            hitsound.play();
             System.out.println(distance);
-            combo++;
+
             return true;
 
         }
@@ -243,7 +243,6 @@ public class GameScreen implements Screen {
         float scaled_Value = scaledDifference + 128;
 
         return (int) scaled_Value;
-
 
     }
 
