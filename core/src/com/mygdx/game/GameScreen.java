@@ -38,8 +38,7 @@ public class GameScreen implements Screen {
 
     public int hitObjectScale;
     public List<HitObject> currentHitObjects = new LinkedList<>();
-    public static int resolutionMultiplierX;
-    public static int resolutionMultiplierY;
+    public static double resolutionMultiplierY;
     public static int xOffset;
     public static int yOffset;
     int newHeight;
@@ -62,8 +61,7 @@ public class GameScreen implements Screen {
         xOffset = ((Gdx.graphics.getWidth() - newWidth) / 2) + 64; // maximum object x property is 512
         yOffset = 48; // maximum object y property is 384
 
-        resolutionMultiplierX = (int) (Gdx.graphics.getWidth() / 640);  // 640 is default for osuPixel X in osu file format
-        resolutionMultiplierY = (int) (Gdx.graphics.getHeight()/ 480); // same but for Y
+        resolutionMultiplierY =(Gdx.graphics.getHeight()/ 480.0); // same but for Y
 
         System.out.println("NEWXZERO -> " + xOffset + " NEWYZERO -> " + yOffset);
 
@@ -110,7 +108,6 @@ public class GameScreen implements Screen {
         bitmapFont.draw(game.batch, combo + "x", 5, 70);
         int approachCircleScale;
 
-
         for (HitObject hitObject : currentHitObjects) {
 
             Texture circleNumber = new Texture(Gdx.files.internal(
@@ -147,13 +144,13 @@ public class GameScreen implements Screen {
     }
 
     private int calculateObjectXPosition(int osuPixelX) {
-        return (int) ((osuPixelX * 2.25) + xOffset);
+        return (int) ((osuPixelX * resolutionMultiplierY) + xOffset);
 
         // osuPixelX * resolutionMultiplierX
     }
 
     private int calculateObjectYPosition(int osuPixelY) {
-        return (int) Math.abs((osuPixelY * 2.25 + yOffset) - Gdx.graphics.getHeight()) - yOffset*3;
+        return (int) Math.abs((osuPixelY * resolutionMultiplierY + yOffset) - Gdx.graphics.getHeight()) - yOffset*3;
     }
 
     private boolean checkIfUserHasClicked() {
@@ -176,7 +173,6 @@ public class GameScreen implements Screen {
                 currentHitObjects.remove(hitObject);
             }
         }
-//        System.out.println("X OFFSET -> " + xOffset); // TODO: 10.08.2023
 
     }
 
