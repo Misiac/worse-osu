@@ -23,7 +23,8 @@ public class GameScreen implements Screen {
 
 
     Game game;
-    Sound sound;
+    Sound music;
+    Sound hitsound;
 
     public static final long AR_OFFSET = 900;
     public static final int OBJECT_SIDE_LENGTH = 128;
@@ -37,7 +38,8 @@ public class GameScreen implements Screen {
     public static final int MOUSE_BUTTON_TWO = Input.Buttons.RIGHT;
 
     public int hitObjectScale;
-    public List<HitObject> currentHitObjects = new LinkedList<>();
+    public List<HitObject> renderedHitObjects = new LinkedList<>();
+    public List<HitObject> clickedHitObjects = new LinkedList<>();
     public static double resolutionMultiplierY;
     public static int xOffset;
     public static int yOffset;
@@ -48,12 +50,12 @@ public class GameScreen implements Screen {
     Map map;
     int combo = 0;
     BitmapFont bitmapFont;
-    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
-    FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    FreeTypeFontGenerator generator;
+    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 
-    Texture hitCircle = new Texture(Gdx.files.internal("hitcircle.png"));
-    Texture hitCircleOverlay = new Texture(Gdx.files.internal("hitcircleoverlay.png"));
-    Texture approachCircle = new Texture(Gdx.files.internal("approachcircle.png"));
+    Texture hitCircle;
+    Texture hitCircleOverlay;
+    Texture approachCircle;
 
 
     public GameScreen(Game game) throws IOException {  // TODO: 09.08.2023 throws
@@ -65,10 +67,10 @@ public class GameScreen implements Screen {
         xOffset = ((Gdx.graphics.getWidth() - newWidth) / 2) + 64; // maximum object x property is 512
         yOffset = 48; // maximum object y property is 384
 
-        resolutionMultiplierY =(Gdx.graphics.getHeight()/ 480.0); // same but for Y
-
+        resolutionMultiplierY = (Gdx.graphics.getHeight() / 480.0); // same but for Y
         this.map = MapLoader.Load(game.files.get(0));
-        sound = Gdx.audio.newSound(Gdx.files.internal(map.getAudioPath()));
+
+        prepareObjects();
 
         Pixmap pm = new Pixmap(Gdx.files.internal("cursor.png"));
         Cursor cursor = Gdx.graphics.newCursor(pm, 64, 64);
@@ -76,13 +78,26 @@ public class GameScreen implements Screen {
         Gdx.graphics.setCursor(cursor);
 
         startTimeReference = System.currentTimeMillis();
-
         parameter.size = 80;
         bitmapFont = generator.generateFont(parameter);
         generator.dispose();
 
-        sound.play(0.05f);
+        music.play(0.05f);
     }
+
+    private void prepareObjects() {
+
+        hitCircle = new Texture(Gdx.files.internal("hitcircle.png"));
+        hitCircleOverlay = new Texture(Gdx.files.internal("hitcircleoverlay.png"));
+        approachCircle = new Texture(Gdx.files.internal("approachcircle.png"));
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        music = Gdx.audio.newSound(Gdx.files.internal(map.getAudioPath()));
+        hitsound = Gdx.audio.newSound(Gdx.files.internal("hitsound.ogg"));
+
+
+    }
+
 
     @Override
     public void show() {
@@ -103,7 +118,7 @@ public class GameScreen implements Screen {
         bitmapFont.draw(game.batch, combo + "x", 5, 70);
         int approachCircleScale;
 
-        for (HitObject hitObject : currentHitObjects) {
+        for (HitObject hitObject : renderedHitObjects) {
 
             Texture circleNumber = new Texture(Gdx.files.internal( // maybe preload all numbers from 0-9?
                     CircleNumber.valueOf("N" + 1).getPath()
@@ -128,14 +143,21 @@ public class GameScreen implements Screen {
 
         if (checkIfUserHasClicked()) {
 
-            for (HitObject hitObject : currentHitObjects) {
-                boolean wasPressed = checkIfObjectsWasPressed(calculateObjectXPosition(hitObject.getOsuPixelX()),
+            for (HitObject hitObject : renderedHitObjects) {
+                boolean wasHit = checkIfObjectsWasPressed(calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY()));
-                System.out.println(Gdx.input.getY() + "  --Y ");
-
+                if (wasHit) {
+                    handleHitObjectHit(hitObject);
+                    break;
+                }
             }
         }
+    }
 
+    private void handleHitObjectHit(HitObject hitObject) {
+        clickedHitObjects.add(hitObject);
+        renderedHitObjects.remove(hitObject);
+        hitsound.play();
     }
 
     private int calculateObjectXPosition(int osuPixelX) {
@@ -145,7 +167,7 @@ public class GameScreen implements Screen {
     }
 
     private int calculateObjectYPosition(int osuPixelY) {
-        return (int) Math.abs((osuPixelY * resolutionMultiplierY + yOffset) - Gdx.graphics.getHeight()) - yOffset*3;
+        return (int) Math.abs((osuPixelY * resolutionMultiplierY + yOffset) - Gdx.graphics.getHeight()) - yOffset * 3;
     }
 
     private boolean checkIfUserHasClicked() {
@@ -154,21 +176,22 @@ public class GameScreen implements Screen {
     }
 
     private void filterHitObjects() {
-//        System.out.println(map.getMapsets().get(2).getVersion()); // TODO: 10.08.2023
         for (HitObject hitObject : map.getMapsets().get(2).getHitObjects()) {
 
-            if (timeFromStart > hitObject.getTime() - AR_OFFSET && timeFromStart < hitObject.getTime()) {
-                if (!currentHitObjects.contains(hitObject)) {
-                    currentHitObjects.add(hitObject);
+            if (!clickedHitObjects.contains(hitObject) && timeFromStart > hitObject.getTime() - AR_OFFSET && timeFromStart < hitObject.getTime()) {
+                if (!renderedHitObjects.contains(hitObject)) {
+                    renderedHitObjects.add(hitObject);
                     System.out.println("X POSITION -> " + calculateObjectXPosition(hitObject.getOsuPixelX()) + " Y POSITION -> " + calculateObjectYPosition(hitObject.getOsuPixelY()));
-                    
+
                 }
             }
             if (timeFromStart > hitObject.getTime()) {
-                currentHitObjects.remove(hitObject);
+                renderedHitObjects.remove(hitObject);
+            }
+            if (hitObject.getTime() > timeFromStart + AR_OFFSET) {
+                break;
             }
         }
-
     }
 
     private boolean checkIfObjectsWasPressed(int x, int y) {
@@ -182,6 +205,7 @@ public class GameScreen implements Screen {
         System.out.println("distance -> " + distance + " gdxX -> " + inputX + " gdxY -> " + inputY + " circleX -> " + x + " circleY -> " + y); // TODO: 10.08.2023
         if (distance < 64) {
             System.out.println("REGISTERED CLICK");
+            hitsound.play();
             System.out.println(distance);
             combo++;
             return true;
@@ -198,9 +222,6 @@ public class GameScreen implements Screen {
 
         float scaledDifference = (circleHitTime - timeFromStart) * scaling_factor;
         float scaled_Value = scaledDifference + 128;
-
-//        System.out.println("Circle Time -> " + circleHitTime + " Start Time -> " + timeFromStart + " result -> " + scaled_Value); // TODO: 08.08.2023
-
 
         return (int) scaled_Value;
 
