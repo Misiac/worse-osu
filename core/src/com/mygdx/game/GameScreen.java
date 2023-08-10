@@ -18,6 +18,7 @@ import com.mygdx.game.model.Map;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class GameScreen implements Screen {
 
@@ -38,9 +39,13 @@ public class GameScreen implements Screen {
     public static final int MOUSE_BUTTON_TWO = Input.Buttons.RIGHT;
 
     public int hitObjectScale;
-    public List<HitObject> renderedHitObjects = new LinkedList<>();
-    public List<HitObject> clickedHitObjects = new LinkedList<>();
+
+    public List<HitObject> currentHitObjects = new LinkedList<>();
+    public List<HitObject> pastHitObjects = new LinkedList<>();
+    public List<HitObject> futureHitObjects = new LinkedList<>();
+
     public static double resolutionMultiplierY;
+
     public static int xOffset;
     public static int yOffset;
     int newHeight;
@@ -95,6 +100,8 @@ public class GameScreen implements Screen {
         music = Gdx.audio.newSound(Gdx.files.internal(map.getAudioPath()));
         hitsound = Gdx.audio.newSound(Gdx.files.internal("hitsound.ogg"));
 
+        futureHitObjects.addAll(map.getMapsets().get(0).getHitObjects()); // add all objects at start from source
+
 
     }
 
@@ -118,7 +125,7 @@ public class GameScreen implements Screen {
         bitmapFont.draw(game.batch, combo + "x", 5, 70);
         int approachCircleScale;
 
-        for (HitObject hitObject : renderedHitObjects) {
+        for (HitObject hitObject : currentHitObjects) {
 
             Texture circleNumber = new Texture(Gdx.files.internal( // maybe preload all numbers from 0-9?
                     CircleNumber.valueOf("N" + 1).getPath()
@@ -143,7 +150,7 @@ public class GameScreen implements Screen {
 
         if (checkIfUserHasClicked()) {
 
-            for (HitObject hitObject : renderedHitObjects) {
+            for (HitObject hitObject : currentHitObjects) {
                 boolean wasHit = checkIfObjectsWasPressed(calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY()));
                 if (wasHit) {
@@ -155,8 +162,8 @@ public class GameScreen implements Screen {
     }
 
     private void handleHitObjectHit(HitObject hitObject) {
-        clickedHitObjects.add(hitObject);
-        renderedHitObjects.remove(hitObject);
+        pastHitObjects.add(hitObject);
+        currentHitObjects.remove(hitObject);
         hitsound.play();
     }
 
@@ -175,22 +182,29 @@ public class GameScreen implements Screen {
     }
 
     private void filterHitObjects() {
-        for (HitObject hitObject : map.getMapsets().get(0).getHitObjects()) {
+        ListIterator<HitObject> listIterator = futureHitObjects.listIterator();
 
-            if (!clickedHitObjects.contains(hitObject) && timeFromStart > hitObject.getTime() - AR_OFFSET && timeFromStart < hitObject.getTime()) {
-                if (!renderedHitObjects.contains(hitObject)) {
-                    renderedHitObjects.add(hitObject);
-                    System.out.println("X POSITION -> " + calculateObjectXPosition(hitObject.getOsuPixelX()) + " Y POSITION -> " + calculateObjectYPosition(hitObject.getOsuPixelY()));
+        while (listIterator.hasNext()) { // filters future hit objects into currently rendered
+            HitObject hitObject = listIterator.next();
+
+            if (!pastHitObjects.contains(hitObject) && timeFromStart > hitObject.getTime() - AR_OFFSET && timeFromStart < hitObject.getTime()) {//timeframe of being rendered
+                if (!currentHitObjects.contains(hitObject)) {
+                    currentHitObjects.add(hitObject);
+                    listIterator.remove();
                     continue;
                 }
-
             }
-            if (timeFromStart > hitObject.getTime() ) {
-                renderedHitObjects.remove(hitObject);
-                System.out.println("miss");
-            }
-            if (hitObject.getTime() > timeFromStart + AR_OFFSET) {
+            if (hitObject.getTime() > timeFromStart + AR_OFFSET) { // after timeframe of being rendered so breaks useless looping
                 break;
+            }
+        }
+        listIterator = currentHitObjects.listIterator();
+        while (listIterator.hasNext()) { // filters currently rendered objects into past ones if they are after their time
+            HitObject hitObject = listIterator.next();
+            if (timeFromStart >= hitObject.getTime()) { // if is after being rendered
+                listIterator.remove();
+                pastHitObjects.add(hitObject);
+                System.out.println("miss");
             }
         }
     }
