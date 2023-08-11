@@ -158,7 +158,9 @@ public class GameScreen implements Screen {
         while (iterator.hasNext()) {
             VisualEffect visualEffect = iterator.next();
             if (visualEffect.getTimer() != 0) {
-                game.batch.draw(visualEffect.getTexture(), visualEffect.getXCoordinate(), visualEffect.getYCoordinate());
+                game.batch.draw(visualEffect.getTexture(),
+                        visualEffect.getXCoordinate(),
+                        visualEffect.getYCoordinate());
                 visualEffect.decrementTimer();
             } else {
                 visualEffect = null;
