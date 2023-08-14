@@ -50,6 +50,11 @@ public class GameScreen implements Screen {
     public List<HitObject> pastHitObjects = new LinkedList<>();
     public List<HitObject> futureHitObjects = new LinkedList<>();
     public List<VisualEffect> visualEffects = new LinkedList<>();
+    public int count0;
+    public int count50;
+    public int count100;
+    public int count300;
+
 
     public static double resolutionMultiplierY;
 
@@ -122,12 +127,13 @@ public class GameScreen implements Screen {
         hit100 = new Texture(Gdx.files.internal("hit100.png"));
         combo = 0;
         score = 0;
+        count0 = 0;
+        count50 = 0;
+        count100 = 0;
+        count300 = 0;
         objectsUntilNow = 0;
 
-
-        futureHitObjects.addAll(map.getMapsets().get(0).getHitObjects()); // add all objects at start from source
-
-
+        futureHitObjects.addAll(map.getMapsets().get(3).getHitObjects()); // add all objects at start from source
     }
 
     @Override
@@ -150,7 +156,7 @@ public class GameScreen implements Screen {
         bitmapComboFont.draw(game.batch, combo + "x", 5, 70); // combo drawer
         bitmapScoreFont.draw(game.batch,
                 score + "",
-                (float) Game.WIDTH - (Game.WIDTH / 9),
+                (float) Game.WIDTH - ((float) Game.WIDTH / 9),
                 (float) Game.HEIGHT - 10,
                 200.0F,
                 0,
@@ -203,6 +209,7 @@ public class GameScreen implements Screen {
                 }
             }
         }
+        calculateAccuracy();
     }
 
     private void handleHitObjectHit(HitObject hitObject) { // circle was properly hit
@@ -217,14 +224,17 @@ public class GameScreen implements Screen {
                 visualEffects.add(new VisualEffect(hit50,
                         calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY())));
+                count50++;
                 score += (long) BLUE_HIT_MULTIPLIER * (1 + (combo)) / 25;
-            } else {
-                visualEffects.add(new VisualEffect(hit100, // green hit (100)
+            } else { // green hit (100)
+                visualEffects.add(new VisualEffect(hit100,
                         calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY())));
+                count100++;
                 score += (long) GREEN_HIT_MULTIPLIER * (1 + (combo)) / 25;
             }
-        } else {
+        } else { // perfect hit
+            count300++;
             score += (long) PERFECT_HIT_MULTIPLIER * (1 + (combo)) / 25;
         }
 
@@ -270,6 +280,7 @@ public class GameScreen implements Screen {
                 pastHitObjects.add(hitObject);
                 comboBreak.play(EFFECT_VOLUME);
                 combo = 0; // reset combo
+                count0++;
                 VisualEffect visualEffect = new VisualEffect(miss, calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY()));
                 visualEffects.add(visualEffect);
@@ -307,6 +318,14 @@ public class GameScreen implements Screen {
         return (int) scaled_Value;
 
     }
+
+    private double calculateAccuracy() {
+        double total = 300 * count300 + 100 * count100 + 50 + count50;
+        double countTotal = 300 * (count300 + count100 + count50 + count0);
+        double accuracy = total / countTotal;
+        return accuracy;
+    }
+
 
     @Override
     public void resize(int width, int height) {
