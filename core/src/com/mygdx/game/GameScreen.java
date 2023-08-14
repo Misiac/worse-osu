@@ -29,6 +29,9 @@ public class GameScreen implements Screen {
     Sound comboBreak;
 
     public static final long AR_OFFSET = 900;
+    public static final int BLUE_HIT_MULTIPLIER = 50;
+    public static final int GREEN_HIT_MULTIPLIER = 100;
+    public static final int PERFECT_HIT_MULTIPLIER = 300;
     public static final int OBJECT_SIDE_LENGTH = 128;
     public static final int NUMBER_OBJECT_LENGTH = 50;
     private static final int CIRCLE_CURSOR_OFFSET = OBJECT_SIDE_LENGTH / 2 - NUMBER_OBJECT_LENGTH / 2;
@@ -57,8 +60,13 @@ public class GameScreen implements Screen {
     long startTimeReference;
     long timeFromStart;
     Map map;
-    int combo = 0;
-    BitmapFont bitmapFont;
+    int combo;
+    int objectsUntilNow;
+    long score;
+
+
+    BitmapFont bitmapComboFont;
+    BitmapFont bitmapScoreFont;
     FreeTypeFontGenerator generator;
     FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 
@@ -91,7 +99,9 @@ public class GameScreen implements Screen {
 
         startTimeReference = System.currentTimeMillis();
         parameter.size = 80;
-        bitmapFont = generator.generateFont(parameter);
+        bitmapComboFont = generator.generateFont(parameter);
+        parameter.size = 45;
+        bitmapScoreFont = generator.generateFont(parameter);
         generator.dispose();
 
         music.play(MUSIC_VOLUME);
@@ -110,6 +120,10 @@ public class GameScreen implements Screen {
         miss = new Texture(Gdx.files.internal("hit0.png"));
         hit50 = new Texture(Gdx.files.internal("hit50.png"));
         hit100 = new Texture(Gdx.files.internal("hit100.png"));
+        combo = 0;
+        score = 0;
+        objectsUntilNow = 0;
+
 
         futureHitObjects.addAll(map.getMapsets().get(0).getHitObjects()); // add all objects at start from source
 
@@ -131,8 +145,16 @@ public class GameScreen implements Screen {
 
         game.batch.begin();
 
-        bitmapFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        bitmapFont.draw(game.batch, combo + "x", 5, 70);
+        bitmapComboFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        bitmapScoreFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        bitmapComboFont.draw(game.batch, combo + "x", 5, 70); // combo drawer
+        bitmapScoreFont.draw(game.batch,
+                score + "",
+                (float) Game.WIDTH - (Game.WIDTH / 9),
+                (float) Game.HEIGHT - 10,
+                200.0F,
+                0,
+                false);
         int approachCircleScale;
 
         for (HitObject hitObject : currentHitObjects) {
@@ -154,7 +176,7 @@ public class GameScreen implements Screen {
 
         }
 
-        ListIterator<VisualEffect> iterator = visualEffects.listIterator();
+        ListIterator<VisualEffect> iterator = visualEffects.listIterator(); // visual effect drawer
         while (iterator.hasNext()) {
             VisualEffect visualEffect = iterator.next();
             if (visualEffect.getTimer() != 0) {
@@ -191,16 +213,22 @@ public class GameScreen implements Screen {
 
         long difference = hitObject.getTime() - timeFromStart;
         if (difference > 120) {
-            if (difference > 180) {
+            if (difference > 180) {  // blue hit (50)
                 visualEffects.add(new VisualEffect(hit50,
                         calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY())));
+                score += (long) BLUE_HIT_MULTIPLIER * (1 + (combo)) / 25;
             } else {
-                visualEffects.add(new VisualEffect(hit100,
+                visualEffects.add(new VisualEffect(hit100, // green hit (100)
                         calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY())));
+                score += (long) GREEN_HIT_MULTIPLIER * (1 + (combo)) / 25;
             }
+        } else {
+            score += (long) PERFECT_HIT_MULTIPLIER * (1 + (combo)) / 25;
         }
+
+        objectsUntilNow++;
     }
 
     private int calculateObjectXPosition(int osuPixelX) { // calculates x property from osu pixel format to current user resolution
