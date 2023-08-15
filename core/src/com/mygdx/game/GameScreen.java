@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Cursor;
@@ -82,6 +83,10 @@ public class GameScreen implements Screen {
     Texture hit50;
     Texture hit100;
 
+    ScrollProcessor scrollProcessor = new ScrollProcessor();
+    InputMultiplexer inputMultiplexer = new InputMultiplexer();
+    long musicId;
+
 
     public GameScreen(Game game) throws IOException {  // TODO: 09.08.2023 throws
         this.game = game;
@@ -109,7 +114,9 @@ public class GameScreen implements Screen {
         bitmapScoreFont = generator.generateFont(parameter);
         generator.dispose();
 
-        music.play(MUSIC_VOLUME);
+        musicId = music.play(scrollProcessor.getMusicVolume());
+
+
     }
 
     private void prepareObjects() {
@@ -132,8 +139,10 @@ public class GameScreen implements Screen {
         count100 = 0;
         count300 = 0;
         objectsUntilNow = 0;
+        inputMultiplexer.addProcessor(scrollProcessor);
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
-        futureHitObjects.addAll(map.getMapsets().get(3).getHitObjects()); // add all objects at start from source
+        futureHitObjects.addAll(map.getMapsets().get(1).getHitObjects()); // add all objects at start from source
     }
 
     @Override
@@ -209,13 +218,15 @@ public class GameScreen implements Screen {
                 }
             }
         }
-        calculateAccuracy();
+            music.setVolume(musicId,scrollProcessor.getMusicVolume());
+
+
     }
 
     private void handleHitObjectHit(HitObject hitObject) { // circle was properly hit
         pastHitObjects.add(hitObject);
         currentHitObjects.remove(hitObject);
-        hitsound.play(EFFECT_VOLUME);
+        hitsound.play(scrollProcessor.getEffectVolume());
         combo++;
 
         long difference = hitObject.getTime() - timeFromStart;
@@ -284,7 +295,7 @@ public class GameScreen implements Screen {
                 VisualEffect visualEffect = new VisualEffect(miss, calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY()));
                 visualEffects.add(visualEffect);
-                System.out.println("miss");
+//                System.out.println("miss");
             }
         }
     }
@@ -297,10 +308,10 @@ public class GameScreen implements Screen {
         double distance = Math.sqrt(
                 Math.pow(x - (inputX - 64), 2) + Math.pow(y - (inputY - 64), 2)
         );
-        System.out.println("distance -> " + distance + " gdxX -> " + inputX + " gdxY -> " + inputY + " circleX -> " + x + " circleY -> " + y); // TODO: 10.08.2023
+//        System.out.println("distance -> " + distance + " gdxX -> " + inputX + " gdxY -> " + inputY + " circleX -> " + x + " circleY -> " + y); // TODO: 10.08.2023
         if (distance < 64) {
-            System.out.println("REGISTERED CLICK");
-            System.out.println(distance);
+//            System.out.println("REGISTERED CLICK");
+//            System.out.println(distance);
             return true;
         }
         return false;
@@ -323,9 +334,9 @@ public class GameScreen implements Screen {
         double total = 300 * count300 + 100 * count100 + 50 + count50;
         double countTotal = 300 * (count300 + count100 + count50 + count0);
         double accuracy = total / countTotal;
+//        System.out.println(accuracy);
         return accuracy;
     }
-
 
     @Override
     public void resize(int width, int height) {
