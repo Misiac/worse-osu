@@ -142,7 +142,7 @@ public class GameScreen implements Screen {
         inputMultiplexer.addProcessor(scrollProcessor);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        futureHitObjects.addAll(map.getMapsets().get(1).getHitObjects()); // add all objects at start from source
+        futureHitObjects.addAll(map.getMapsets().get(0).getHitObjects()); // add all objects at start from source
     }
 
     @Override

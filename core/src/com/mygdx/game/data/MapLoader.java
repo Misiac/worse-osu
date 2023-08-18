@@ -68,7 +68,7 @@ public class MapLoader {
         for (String mapsetPath : filesMap.get("MAPSET")) {
             loadedMapsets.add(createMapset(mapsetPath));
         }
-        return new Map(loadedMapsets,filesMap.get("AUDIO").get(0));
+        return new Map(loadedMapsets, filesMap.get("AUDIO").get(0));
     }
 
     private static Mapset createMapset(String mapsetPath) {
@@ -143,6 +143,7 @@ public class MapLoader {
                 String extension = getExtension(mapFile.getPath());
                 switch (extension) {
                     case "mp3":
+                    case "ogg":
                         fileMap.get(MapFileType.AUDIO.name()).add(mapFile.getPath());
                         break;
 
