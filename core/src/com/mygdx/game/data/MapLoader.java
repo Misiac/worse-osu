@@ -68,7 +68,7 @@ public class MapLoader {
         for (String mapsetPath : filesMap.get("MAPSET")) {
             loadedMapsets.add(createMapset(mapsetPath));
         }
-        return new Map(loadedMapsets, filesMap.get("AUDIO").get(0));
+        return new Map(loadedMapsets, filesMap.get("AUDIO").get(0),filesMap.get("BG").get(0));
     }
 
     private static Mapset createMapset(String mapsetPath) {
@@ -121,7 +121,7 @@ public class MapLoader {
                 long time = Long.parseLong(splitLine[2]);
 
                 HitCircle hitCircle = new HitCircle(osuPixelX, osuPixelY, time, counter);
-                System.out.println(currentMax);
+//                System.out.println(currentMax);
                 hitObjects.add(hitCircle);
 
                 if (counter == currentMax) {

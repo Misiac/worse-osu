@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.data.MapLoader;
 import com.mygdx.game.model.CircleNumber;
@@ -70,7 +71,6 @@ public class GameScreen implements Screen {
     int objectsUntilNow;
     long score;
 
-
     BitmapFont bitmapComboFont;
     BitmapFont bitmapScoreFont;
     FreeTypeFontGenerator generator;
@@ -86,6 +86,8 @@ public class GameScreen implements Screen {
     ScrollProcessor scrollProcessor = new ScrollProcessor();
     InputMultiplexer inputMultiplexer = new InputMultiplexer();
     long musicId;
+    Texture background;
+    Sprite backgroundSprite;
 
 
     public GameScreen(Game game) throws IOException {  // TODO: 09.08.2023 throws
@@ -116,7 +118,6 @@ public class GameScreen implements Screen {
 
         musicId = music.play(scrollProcessor.getMusicVolume());
 
-
     }
 
     private void prepareObjects() {
@@ -141,13 +142,14 @@ public class GameScreen implements Screen {
         objectsUntilNow = 0;
         inputMultiplexer.addProcessor(scrollProcessor);
         Gdx.input.setInputProcessor(inputMultiplexer);
-
+        background = new Texture(Gdx.files.internal(map.getBgPath()));
+        backgroundSprite = new Sprite(background);
+        backgroundSprite.setColor(1, 1, 1, 0.1f);
         futureHitObjects.addAll(map.getMapsets().get(0).getHitObjects()); // add all objects at start from source
+        backgroundSprite.setSize(Game.WIDTH,Game.HEIGHT);
     }
-
     @Override
     public void show() {
-
     }
 
     @Override
@@ -156,12 +158,28 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         timeFromStart = System.currentTimeMillis() - startTimeReference;
 
+        double accuracy = calculateAccuracy();
+        String accuracyString;
+
+        if (Double.isInfinite(accuracy)) {
+            accuracyString = "100.00";
+        } else {
+            try {
+                accuracyString = String.valueOf(accuracy).substring(0, 4);
+            } catch (StringIndexOutOfBoundsException e) {
+                accuracyString = String.valueOf(accuracy).substring(0, 3) + "0";
+            }
+        }
+
+
         filterHitObjects();
 
         game.batch.begin();
+        backgroundSprite.draw(game.batch);
 
         bitmapComboFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         bitmapScoreFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+
         bitmapComboFont.draw(game.batch, combo + "x", 5, 70); // combo drawer
         bitmapScoreFont.draw(game.batch,
                 score + "",
@@ -170,9 +188,18 @@ public class GameScreen implements Screen {
                 200.0F,
                 0,
                 false);
+        bitmapScoreFont.draw(game.batch, accuracyString,
+                (float) Game.WIDTH - ((float) Game.WIDTH / 24),
+                (float) Game.HEIGHT - 10 - 40, 70.0F,
+                0,
+                false
+        );
+
+
         int approachCircleScale;
 
-        for (HitObject hitObject : currentHitObjects) {
+        for (
+                HitObject hitObject : currentHitObjects) {
 
             Texture circleNumber = new Texture(Gdx.files.internal( // maybe preload all numbers from 0-9?
                     CircleNumber.valueOf("N" + hitObject.getNumber()).getPath()
@@ -204,10 +231,11 @@ public class GameScreen implements Screen {
                 iterator.remove();
             }
         }
-
         game.batch.end();
 
-        if (checkIfUserHasClicked()) {
+        if (
+
+                checkIfUserHasClicked()) {
 
             for (HitObject hitObject : currentHitObjects) {
                 boolean wasHit = checkIfObjectsWasPressed(calculateObjectXPosition(hitObject.getOsuPixelX()),
@@ -218,9 +246,7 @@ public class GameScreen implements Screen {
                 }
             }
         }
-            music.setVolume(musicId,scrollProcessor.getMusicVolume());
-
-
+        music.setVolume(musicId, scrollProcessor.getMusicVolume());
     }
 
     private void handleHitObjectHit(HitObject hitObject) { // circle was properly hit
@@ -333,9 +359,9 @@ public class GameScreen implements Screen {
     private double calculateAccuracy() {
         double total = 300 * count300 + 100 * count100 + 50 + count50;
         double countTotal = 300 * (count300 + count100 + count50 + count0);
-        double accuracy = total / countTotal;
-//        System.out.println(accuracy);
-        return accuracy;
+        double accuracy;
+            accuracy = total / countTotal;
+        return accuracy * 100;
     }
 
     @Override

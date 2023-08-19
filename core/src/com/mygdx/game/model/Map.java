@@ -17,9 +17,10 @@ public class Map {
         this.mapsets = mapsets;
     }
 
-    public Map(List<Mapset> mapsets, String audioPath) {
+    public Map(List<Mapset> mapsets, String audioPath, String bgPath) {
         this.mapsets = mapsets;
         this.audioPath = audioPath;
+        this.bgPath = bgPath;
     }
 
     public Map(Mapset mapset) {
@@ -28,5 +29,9 @@ public class Map {
 
     public String getAudioPath() {
         return audioPath;
+    }
+
+    public String getBgPath() {
+        return bgPath;
     }
 }
