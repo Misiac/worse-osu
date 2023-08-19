@@ -5,12 +5,14 @@ public abstract class HitObject {
     int osuPixelY;
     long time;
     int type;
+    int number;
 
-    public HitObject(int osuPixelX, int osuPixelY, long time, int type) {
+    public HitObject(int osuPixelX, int osuPixelY, long time, int type, int number) {
         this.osuPixelX = osuPixelX;
         this.osuPixelY = osuPixelY;
         this.time = time;
         this.type = type;
+        this.number = number;
     }
 
     public int getOsuPixelX() {
@@ -29,5 +31,8 @@ public abstract class HitObject {
         return type;
     }
 
+    public int getNumber() {
+        return number;
+    }
 }
 

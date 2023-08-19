@@ -175,7 +175,7 @@ public class GameScreen implements Screen {
         for (HitObject hitObject : currentHitObjects) {
 
             Texture circleNumber = new Texture(Gdx.files.internal( // maybe preload all numbers from 0-9?
-                    CircleNumber.valueOf("N" + 1).getPath()
+                    CircleNumber.valueOf("N" + hitObject.getNumber()).getPath()
             ));
             int calculatedX = calculateObjectXPosition(hitObject.getOsuPixelX());
             int calculatedY = calculateObjectYPosition(hitObject.getOsuPixelY());

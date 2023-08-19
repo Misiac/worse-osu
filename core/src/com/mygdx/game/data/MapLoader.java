@@ -36,26 +36,26 @@ public class MapLoader {
         // do no create instance
     }
 
-    public static Map Load() {
-
-        // test data
-
-        HitCircle hitCircle1 = new HitCircle(201, 138, 705);
-        HitCircle hitCircle2 = new HitCircle(400, 123, 1200);
-        HitCircle hitCircle3 = new HitCircle(288, 155, 1781);
-        HitCircle hitCircle4 = new HitCircle(195, 267, 2336);
-        HitCircle hitCircle5 = new HitCircle(299, 127, 2989);
-        HitCircle hitCircle6 = new HitCircle(201, 138, 3500);
-        HitCircle hitCircle7 = new HitCircle(400, 123, 4000);
-        HitCircle hitCircle8 = new HitCircle(288, 155, 4500);
-        HitCircle hitCircle9 = new HitCircle(195, 267, 5000);
-        HitCircle hitCircle10 = new HitCircle(299, 127, 5500);
-
-        List<HitObject> testData = new ArrayList<>(List.of(hitCircle1, hitCircle2, hitCircle3, hitCircle4,
-                hitCircle5, hitCircle6, hitCircle7, hitCircle8, hitCircle9, hitCircle10));
-
-        return new Map(new Mapset(testData));
-    }
+//    public static Map Load() {
+//
+//        // test data
+//
+////        HitCircle hitCircle1 = new HitCircle(201, 138, 705);
+////        HitCircle hitCircle2 = new HitCircle(400, 123, 1200);
+////        HitCircle hitCircle3 = new HitCircle(288, 155, 1781);
+////        HitCircle hitCircle4 = new HitCircle(195, 267, 2336);
+////        HitCircle hitCircle5 = new HitCircle(299, 127, 2989);
+////        HitCircle hitCircle6 = new HitCircle(201, 138, 3500);
+////        HitCircle hitCircle7 = new HitCircle(400, 123, 4000);
+////        HitCircle hitCircle8 = new HitCircle(288, 155, 4500);
+////        HitCircle hitCircle9 = new HitCircle(195, 267, 5000);
+////        HitCircle hitCircle10 = new HitCircle(299, 127, 5500);
+//
+//        List<HitObject> testData = new ArrayList<>(List.of(hitCircle1, hitCircle2, hitCircle3, hitCircle4,
+//                hitCircle5, hitCircle6, hitCircle7, hitCircle8, hitCircle9, hitCircle10));
+//
+//        return new Map(new Mapset(testData));
+//    }
 
     public static Map Load(String path) throws IOException {
 
@@ -110,15 +110,26 @@ public class MapLoader {
                 line = reader.readLine();
             } while (!line.contains("[HitObjects]"));
 
+            int counter = 1;
+            Random random = new Random();
+            int currentMax = random.nextInt(1, 10); // simulates circle number for now(?)
+
             while ((line = reader.readLine()) != null) { // reads hitObjects
                 String[] splitLine = line.split(",");
                 int osuPixelX = Integer.parseInt(splitLine[0]);
                 int osuPixelY = Integer.parseInt(splitLine[1]);
                 long time = Long.parseLong(splitLine[2]);
-                int type = Integer.parseInt(splitLine[3]);
-                HitCircle hitCircle = new HitCircle(osuPixelX, osuPixelY, time);
+
+                HitCircle hitCircle = new HitCircle(osuPixelX, osuPixelY, time, counter);
+                System.out.println(currentMax);
                 hitObjects.add(hitCircle);
 
+                if (counter == currentMax) {
+                    currentMax = random.nextInt(1, 10);
+                    counter = 1;
+                    continue;
+                }
+                counter++;
             }
             return new Mapset(hitObjects, version, hpDrainRate, circleSize, approachRate);
 
