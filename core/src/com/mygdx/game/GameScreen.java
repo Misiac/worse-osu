@@ -82,12 +82,14 @@ public class GameScreen implements Screen {
     Texture miss;
     Texture hit50;
     Texture hit100;
+    Texture background;
+    Sprite backgroundSprite;
+    Texture healthBarBg;
+    Texture healthBarColor;
 
     ScrollProcessor scrollProcessor = new ScrollProcessor();
     InputMultiplexer inputMultiplexer = new InputMultiplexer();
     long musicId;
-    Texture background;
-    Sprite backgroundSprite;
 
 
     public GameScreen(Game game) throws IOException {  // TODO: 09.08.2023 throws
@@ -146,8 +148,11 @@ public class GameScreen implements Screen {
         backgroundSprite = new Sprite(background);
         backgroundSprite.setColor(1, 1, 1, 0.1f);
         futureHitObjects.addAll(map.getMapsets().get(0).getHitObjects()); // add all objects at start from source
-        backgroundSprite.setSize(Game.WIDTH,Game.HEIGHT);
+        backgroundSprite.setSize(Game.WIDTH, Game.HEIGHT);
+        healthBarBg = new Texture(Gdx.files.internal("scorebar-bg.png"));
+        healthBarColor = new Texture(Gdx.files.internal("scorebar-colour.png"));
     }
+
     @Override
     public void show() {
     }
@@ -171,11 +176,12 @@ public class GameScreen implements Screen {
             }
         }
 
-
         filterHitObjects();
 
         game.batch.begin();
         backgroundSprite.draw(game.batch);
+        game.batch.draw(healthBarBg,0,Game.HEIGHT-healthBarBg.getHeight());
+        game.batch.draw(healthBarColor,3,Game.HEIGHT - healthBarBg.getHeight()/2 - 3);
 
         bitmapComboFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         bitmapScoreFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -360,7 +366,7 @@ public class GameScreen implements Screen {
         double total = 300 * count300 + 100 * count100 + 50 + count50;
         double countTotal = 300 * (count300 + count100 + count50 + count0);
         double accuracy;
-            accuracy = total / countTotal;
+        accuracy = total / countTotal;
         return accuracy * 100;
     }
 
