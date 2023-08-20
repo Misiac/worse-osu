@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.data.MapLoader;
 import com.mygdx.game.model.CircleNumber;
@@ -46,8 +47,6 @@ public class GameScreen implements Screen {
     private static final float EFFECT_VOLUME = 0.5f;
     private static final float MUSIC_VOLUME = 0.5f;
 
-    public int hitObjectScale;
-
     public List<HitObject> currentHitObjects = new LinkedList<>();
     public List<HitObject> pastHitObjects = new LinkedList<>();
     public List<HitObject> futureHitObjects = new LinkedList<>();
@@ -56,10 +55,7 @@ public class GameScreen implements Screen {
     public int count50;
     public int count100;
     public int count300;
-
-
     public static double resolutionMultiplierY;
-
     public static int xOffset;
     public static int yOffset;
     int newHeight;
@@ -67,9 +63,12 @@ public class GameScreen implements Screen {
     long startTimeReference;
     long timeFromStart;
     Map map;
-    int combo;
+    int combo; // maybe private all of these
     int objectsUntilNow;
     long score;
+    long musicId;
+    public int hitObjectScale;
+    int health; // between 0 - 700
 
     BitmapFont bitmapComboFont;
     BitmapFont bitmapScoreFont;
@@ -86,10 +85,10 @@ public class GameScreen implements Screen {
     Sprite backgroundSprite;
     Texture healthBarBg;
     Texture healthBarColor;
+    TextureRegion healthBarRegion;
 
     ScrollProcessor scrollProcessor = new ScrollProcessor();
     InputMultiplexer inputMultiplexer = new InputMultiplexer();
-    long musicId;
 
 
     public GameScreen(Game game) throws IOException {  // TODO: 09.08.2023 throws
@@ -151,6 +150,8 @@ public class GameScreen implements Screen {
         backgroundSprite.setSize(Game.WIDTH, Game.HEIGHT);
         healthBarBg = new Texture(Gdx.files.internal("scorebar-bg.png"));
         healthBarColor = new Texture(Gdx.files.internal("scorebar-colour.png"));
+        healthBarRegion = new TextureRegion(healthBarColor, 0, 0, 700, healthBarColor.getHeight());
+        health = 700;
     }
 
     @Override
@@ -178,10 +179,11 @@ public class GameScreen implements Screen {
 
         filterHitObjects();
 
+        healthBarRegion.setRegionWidth(calculateHealth());
         game.batch.begin();
         backgroundSprite.draw(game.batch);
-        game.batch.draw(healthBarBg,0,Game.HEIGHT-healthBarBg.getHeight());
-        game.batch.draw(healthBarColor,3,Game.HEIGHT - healthBarBg.getHeight()/2 - 3);
+        game.batch.draw(healthBarBg, 0, Game.HEIGHT - healthBarBg.getHeight());
+        game.batch.draw(healthBarRegion, 3, Game.HEIGHT - healthBarBg.getHeight() / 2 - 3);
 
         bitmapComboFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         bitmapScoreFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -240,7 +242,6 @@ public class GameScreen implements Screen {
         game.batch.end();
 
         if (
-
                 checkIfUserHasClicked()) {
 
             for (HitObject hitObject : currentHitObjects) {
@@ -255,6 +256,13 @@ public class GameScreen implements Screen {
         music.setVolume(musicId, scrollProcessor.getMusicVolume());
     }
 
+    private int calculateHealth() {
+        health -= 1;
+        System.out.println(health);
+        return health;
+
+    }
+
     private void handleHitObjectHit(HitObject hitObject) { // circle was properly hit
         pastHitObjects.add(hitObject);
         currentHitObjects.remove(hitObject);
@@ -267,6 +275,7 @@ public class GameScreen implements Screen {
                 visualEffects.add(new VisualEffect(hit50,
                         calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY())));
+                addHealth(10);
                 count50++;
                 score += (long) BLUE_HIT_MULTIPLIER * (1 + (combo)) / 25;
             } else { // green hit (100)
@@ -274,14 +283,22 @@ public class GameScreen implements Screen {
                         calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY())));
                 count100++;
+                addHealth(30);
                 score += (long) GREEN_HIT_MULTIPLIER * (1 + (combo)) / 25;
             }
         } else { // perfect hit
             count300++;
             score += (long) PERFECT_HIT_MULTIPLIER * (1 + (combo)) / 25;
+            addHealth(50);
         }
 
         objectsUntilNow++;
+    }
+
+    private void addHealth(int amount) {
+        if (health + amount > 700) {
+            health = 700;
+        } else health += amount;
     }
 
     private int calculateObjectXPosition(int osuPixelX) { // calculates x property from osu pixel format to current user resolution
@@ -328,6 +345,7 @@ public class GameScreen implements Screen {
                         calculateObjectYPosition(hitObject.getOsuPixelY()));
                 visualEffects.add(visualEffect);
 //                System.out.println("miss");
+                addHealth(-50);
             }
         }
     }
@@ -367,6 +385,7 @@ public class GameScreen implements Screen {
         double countTotal = 300 * (count300 + count100 + count50 + count0);
         double accuracy;
         accuracy = total / countTotal;
+        System.out.println(accuracy * 100);
         return accuracy * 100;
     }
 
