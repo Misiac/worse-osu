@@ -167,15 +167,17 @@ public class GameScreen implements Screen {
         double accuracy = calculateAccuracy();
         String accuracyString;
 
-        if (Double.isInfinite(accuracy)) {
-            accuracyString = "100.00";
+        if (accuracy == 100) {
+            accuracyString = "100.0%";
+
         } else {
             try {
-                accuracyString = String.valueOf(accuracy).substring(0, 4);
+                accuracyString = String.valueOf(accuracy).substring(0, 4) + "%";
             } catch (StringIndexOutOfBoundsException e) {
-                accuracyString = String.valueOf(accuracy).substring(0, 3) + "0";
+                accuracyString = String.valueOf(accuracy).substring(0, 3) + "0" + "%";
             }
         }
+
         filterHitObjects();
 
         healthBarRegion.setRegionWidth(calculateHealth());
@@ -247,7 +249,7 @@ public class GameScreen implements Screen {
                 }
             }
         }
-        if (scrollProcessor.scrolled(0,0)){
+        if (scrollProcessor.scrolled(0, 0)) {
             System.out.println("test");
         }
         music.setVolume(musicId, scrollProcessor.getMusicVolume());
@@ -376,11 +378,13 @@ public class GameScreen implements Screen {
     }
 
     private double calculateAccuracy() {
-        double total = 300 * count300 + 100 * count100 + 50 + count50;
+        double total = 300 * count300 + 100 * count100 + 50 * count50;
         double countTotal = 300 * (count300 + count100 + count50 + count0);
         double accuracy;
         accuracy = total / countTotal;
-//        System.out.println(accuracy * 100);
+        if (Double.isNaN(accuracy)) {
+            return 100;
+        }
         return accuracy * 100;
     }
 
