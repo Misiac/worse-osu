@@ -26,6 +26,7 @@ import java.util.ListIterator;
 
 public class GameScreen implements Screen {
 
+
     Game game;
     Sound music;
     Sound hitsound;
@@ -44,8 +45,7 @@ public class GameScreen implements Screen {
 
     public static final int MOUSE_BUTTON_ONE = Input.Buttons.LEFT;
     public static final int MOUSE_BUTTON_TWO = Input.Buttons.RIGHT;
-    private static final float EFFECT_VOLUME = 0.5f;
-    private static final float MUSIC_VOLUME = 0.5f;
+
 
     public List<HitObject> currentHitObjects = new LinkedList<>();
     public List<HitObject> pastHitObjects = new LinkedList<>();
@@ -176,7 +176,6 @@ public class GameScreen implements Screen {
                 accuracyString = String.valueOf(accuracy).substring(0, 3) + "0";
             }
         }
-
         filterHitObjects();
 
         healthBarRegion.setRegionWidth(calculateHealth());
@@ -203,11 +202,9 @@ public class GameScreen implements Screen {
                 false
         );
 
-
         int approachCircleScale;
 
-        for (
-                HitObject hitObject : currentHitObjects) {
+        for (HitObject hitObject : currentHitObjects) {
 
             Texture circleNumber = new Texture(Gdx.files.internal( // maybe preload all numbers from 0-9?
                     CircleNumber.valueOf("N" + hitObject.getNumber()).getPath()
@@ -225,7 +222,6 @@ public class GameScreen implements Screen {
             game.batch.draw(circleNumber, calculatedX + CIRCLE_CURSOR_OFFSET, calculatedY + CIRCLE_CURSOR_OFFSET);   // 128:2 - 25/2
 
         }
-
         ListIterator<VisualEffect> iterator = visualEffects.listIterator(); // visual effect drawer
         while (iterator.hasNext()) {
             VisualEffect visualEffect = iterator.next();
@@ -239,11 +235,9 @@ public class GameScreen implements Screen {
                 iterator.remove();
             }
         }
-        game.batch.end();
+        game.batch.end(); // ends drawing
 
-        if (
-                checkIfUserHasClicked()) {
-
+        if (checkIfUserHasClicked()) {  // if user clicked anywhere
             for (HitObject hitObject : currentHitObjects) {
                 boolean wasHit = checkIfObjectsWasPressed(calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY()));
@@ -253,14 +247,15 @@ public class GameScreen implements Screen {
                 }
             }
         }
+        if (scrollProcessor.scrolled(0,0)){
+            System.out.println("test");
+        }
         music.setVolume(musicId, scrollProcessor.getMusicVolume());
     }
 
     private int calculateHealth() {
         health -= 1;
-        System.out.println(health);
         return health;
-
     }
 
     private void handleHitObjectHit(HitObject hitObject) { // circle was properly hit
@@ -338,7 +333,7 @@ public class GameScreen implements Screen {
             if (timeFromStart >= hitObject.getTime()) { // if is after being rendered (MISS)
                 listIterator.remove();
                 pastHitObjects.add(hitObject);
-                comboBreak.play(EFFECT_VOLUME);
+                comboBreak.play(scrollProcessor.getEffectVolume());
                 combo = 0; // reset combo
                 count0++;
                 VisualEffect visualEffect = new VisualEffect(miss, calculateObjectXPosition(hitObject.getOsuPixelX()),
@@ -385,7 +380,7 @@ public class GameScreen implements Screen {
         double countTotal = 300 * (count300 + count100 + count50 + count0);
         double accuracy;
         accuracy = total / countTotal;
-        System.out.println(accuracy * 100);
+//        System.out.println(accuracy * 100);
         return accuracy * 100;
     }
 

@@ -59,20 +59,24 @@ public class ScrollProcessor implements InputProcessor {
     @Override
     public boolean scrolled(float amountX, float amountY) {
         if (amountY == -1.0) {
-            if (effectVolume <= 1 && musicVolume <= 1) {
+            if (effectVolume <= 1 || musicVolume <= 1) {
                 effectVolume += JUMP;
                 musicVolume += JUMP;
-                System.out.println("volume up");
+//                System.out.println("volume up");
             }
         } else if (amountY == 1.0) {
-            if (effectVolume >= 0 && musicVolume >= 0) {
+            if (effectVolume >= 0 || musicVolume >= 0) {
                 effectVolume -= JUMP;
                 musicVolume -= JUMP;
-                System.out.println("volume down");
+                if (effectVolume - JUMP < 0 || musicVolume - JUMP < 0) {
+                    effectVolume = 0;
+                    musicVolume = 0;
+                }
+//                System.out.println("volume down");
             }
         }
-        System.out.println("amount Y " + amountY);
-        System.out.println("music volume -> " + musicVolume);
+//        System.out.println("amount Y " + amountY);
+//        System.out.println("music volume -> " + musicVolume);
         return false;
     }
 }
