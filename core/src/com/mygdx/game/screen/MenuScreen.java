@@ -1,10 +1,11 @@
-package com.mygdx.game;
+package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.mygdx.game.Game;
 import com.mygdx.game.data.MapLoader;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class MenuScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
 
 
         int x = Game.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2;

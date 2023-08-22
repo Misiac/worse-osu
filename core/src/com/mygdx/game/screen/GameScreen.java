@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.mygdx.game.Game;
+import com.mygdx.game.ScrollProcessor;
 import com.mygdx.game.data.MapLoader;
 import com.mygdx.game.model.CircleNumber;
 import com.mygdx.game.model.HitObject;
@@ -69,6 +71,7 @@ public class GameScreen implements Screen {
     long musicId;
     public int hitObjectScale;
     int health; // between 0 - 700
+    long lastHitObjectTime;
 
     BitmapFont bitmapComboFont;
     BitmapFont bitmapScoreFont;
@@ -152,6 +155,8 @@ public class GameScreen implements Screen {
         healthBarColor = new Texture(Gdx.files.internal("scorebar-colour.png"));
         healthBarRegion = new TextureRegion(healthBarColor, 0, 0, 700, healthBarColor.getHeight());
         health = 700;
+        lastHitObjectTime = futureHitObjects.get(futureHitObjects.size() - 1).getTime();
+        System.out.println(lastHitObjectTime);
     }
 
     @Override
@@ -177,7 +182,7 @@ public class GameScreen implements Screen {
                 accuracyString = String.valueOf(accuracy).substring(0, 3) + "0" + "%";
             }
         }
-
+        music.setVolume(musicId, scrollProcessor.getMusicVolume());
         filterHitObjects();
 
         healthBarRegion.setRegionWidth(calculateHealth());
@@ -249,10 +254,11 @@ public class GameScreen implements Screen {
                 }
             }
         }
-        if (scrollProcessor.scrolled(0, 0)) {
-            System.out.println("test");
+
+        if (health <= 0 || timeFromStart > (lastHitObjectTime + 1000)) { // user has lost or completed the map
+            music.stop();
+            game.setScreen(new ScoreScreen(game));
         }
-        music.setVolume(musicId, scrollProcessor.getMusicVolume());
     }
 
     private int calculateHealth() {
@@ -341,7 +347,6 @@ public class GameScreen implements Screen {
                 VisualEffect visualEffect = new VisualEffect(miss, calculateObjectXPosition(hitObject.getOsuPixelX()),
                         calculateObjectYPosition(hitObject.getOsuPixelY()));
                 visualEffects.add(visualEffect);
-//                System.out.println("miss");
                 addHealth(-50);
             }
         }
@@ -355,10 +360,7 @@ public class GameScreen implements Screen {
         double distance = Math.sqrt(
                 Math.pow(x - (inputX - 64), 2) + Math.pow(y - (inputY - 64), 2)
         );
-//        System.out.println("distance -> " + distance + " gdxX -> " + inputX + " gdxY -> " + inputY + " circleX -> " + x + " circleY -> " + y); // TODO: 10.08.2023
         if (distance < 64) {
-//            System.out.println("REGISTERED CLICK");
-//            System.out.println(distance);
             return true;
         }
         return false;
