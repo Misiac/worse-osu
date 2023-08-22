@@ -16,12 +16,11 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.Game;
 import com.mygdx.game.ScrollProcessor;
 import com.mygdx.game.data.MapLoader;
-import com.mygdx.game.model.CircleNumber;
-import com.mygdx.game.model.HitObject;
-import com.mygdx.game.model.Map;
-import com.mygdx.game.model.VisualEffect;
+import com.mygdx.game.model.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -66,6 +65,7 @@ public class GameScreen implements Screen {
     long timeFromStart;
     Map map;
     int combo; // maybe private all of these
+    private int maxCombo;
     int objectsUntilNow;
     long score;
     long musicId;
@@ -138,6 +138,7 @@ public class GameScreen implements Screen {
         hit50 = new Texture(Gdx.files.internal("hit50.png"));
         hit100 = new Texture(Gdx.files.internal("hit100.png"));
         combo = 0;
+        maxCombo = 0;
         score = 0;
         count0 = 0;
         count50 = 0;
@@ -156,7 +157,6 @@ public class GameScreen implements Screen {
         healthBarRegion = new TextureRegion(healthBarColor, 0, 0, 700, healthBarColor.getHeight());
         health = 700;
         lastHitObjectTime = futureHitObjects.get(futureHitObjects.size() - 1).getTime();
-        System.out.println(lastHitObjectTime);
     }
 
     @Override
@@ -256,8 +256,24 @@ public class GameScreen implements Screen {
         }
 
         if (health <= 0 || timeFromStart > (lastHitObjectTime + 1000)) { // user has lost or completed the map
+            boolean loseFlag = false;
+            if (health <= 0) {
+                loseFlag = true;
+            }
             music.stop();
-            game.setScreen(new ScoreScreen(game));
+            game.setScreen(new ScoreScreen(game, new Score(
+                    map.getMapsets().get(0).getName(),
+                    LocalDate.now().toString(),
+                    LocalTime.now().toString().substring(0, 8),
+                    count300,
+                    count100,
+                    count50,
+                    count0,
+                    maxCombo,
+                    score,
+                    accuracyString,
+                    loseFlag
+            )));
         }
     }
 
@@ -271,6 +287,7 @@ public class GameScreen implements Screen {
         currentHitObjects.remove(hitObject);
         hitsound.play(scrollProcessor.getEffectVolume());
         combo++;
+        if (combo > maxCombo) maxCombo = combo;
 
         long difference = hitObject.getTime() - timeFromStart;
         if (difference > 120) {

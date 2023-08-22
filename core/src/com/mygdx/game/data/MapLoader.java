@@ -18,44 +18,9 @@ public class MapLoader {
 
     private static final String TEMPORARY_DIRECTORY_PATH = System.getProperty("java.io.tmpdir") + "osuclonemap";
 
-    public static void main(String[] args) throws IOException { // test purposes
-        System.out.println(TEMPORARY_DIRECTORY_PATH);
-
-        unzipFile("D:\\TWRP\\1821202 LiSA - traumerei.osz");
-
-        java.util.Map<String, List<String>> filesMap = filterFiles();
-
-        List<Mapset> loadedMapsets = new LinkedList<>();
-
-        for (String mapsetPath : filesMap.get("MAPSET")) {
-            loadedMapsets.add(createMapset(mapsetPath));
-        }
-    }
-
     private MapLoader() {
         // do no create instance
     }
-
-//    public static Map Load() {
-//
-//        // test data
-//
-////        HitCircle hitCircle1 = new HitCircle(201, 138, 705);
-////        HitCircle hitCircle2 = new HitCircle(400, 123, 1200);
-////        HitCircle hitCircle3 = new HitCircle(288, 155, 1781);
-////        HitCircle hitCircle4 = new HitCircle(195, 267, 2336);
-////        HitCircle hitCircle5 = new HitCircle(299, 127, 2989);
-////        HitCircle hitCircle6 = new HitCircle(201, 138, 3500);
-////        HitCircle hitCircle7 = new HitCircle(400, 123, 4000);
-////        HitCircle hitCircle8 = new HitCircle(288, 155, 4500);
-////        HitCircle hitCircle9 = new HitCircle(195, 267, 5000);
-////        HitCircle hitCircle10 = new HitCircle(299, 127, 5500);
-//
-//        List<HitObject> testData = new ArrayList<>(List.of(hitCircle1, hitCircle2, hitCircle3, hitCircle4,
-//                hitCircle5, hitCircle6, hitCircle7, hitCircle8, hitCircle9, hitCircle10));
-//
-//        return new Map(new Mapset(testData));
-//    }
 
     public static Map Load(String path) throws IOException {
 
@@ -68,7 +33,7 @@ public class MapLoader {
         for (String mapsetPath : filesMap.get("MAPSET")) {
             loadedMapsets.add(createMapset(mapsetPath));
         }
-        return new Map(loadedMapsets, filesMap.get("AUDIO").get(0),filesMap.get("BG").get(0));
+        return new Map(loadedMapsets, filesMap.get("AUDIO").get(0), filesMap.get("BG").get(0));
     }
 
     private static Mapset createMapset(String mapsetPath) {
@@ -78,6 +43,8 @@ public class MapLoader {
             String line;
 
             String version;
+            String name = mapsetPath.substring(mapsetPath.lastIndexOf("\\")+1, mapsetPath.lastIndexOf("."));
+            System.out.println(name);
             double hpDrainRate;
             double circleSize;
             double approachRate;
@@ -112,7 +79,7 @@ public class MapLoader {
 
             int counter = 1;
             Random random = new Random();
-            int currentMax = random.nextInt(1, 10); // simulates circle number for now(?)
+            int currentMax = random.nextInt(1, 10); // simulates circle number for now(?...)
 
             while ((line = reader.readLine()) != null) { // reads hitObjects
                 String[] splitLine = line.split(",");
@@ -121,7 +88,6 @@ public class MapLoader {
                 long time = Long.parseLong(splitLine[2]);
 
                 HitCircle hitCircle = new HitCircle(osuPixelX, osuPixelY, time, counter);
-//                System.out.println(currentMax);
                 hitObjects.add(hitCircle);
 
                 if (counter == currentMax) {
@@ -131,7 +97,7 @@ public class MapLoader {
                 }
                 counter++;
             }
-            return new Mapset(hitObjects, version, hpDrainRate, circleSize, approachRate);
+            return new Mapset(name,hitObjects, version, hpDrainRate, circleSize, approachRate);
 
         } catch (IOException e) {
             System.out.println(e.getMessage());

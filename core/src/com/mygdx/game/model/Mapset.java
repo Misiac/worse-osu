@@ -9,6 +9,7 @@ public class Mapset {
     private double hpDrainRate;
     private double circleSize;
     private double approachRate;
+    private String name;
 
 
     public Mapset(List<HitObject> testData) {
@@ -16,13 +17,14 @@ public class Mapset {
 
     }
 
-    public Mapset(List<HitObject> hitObjects, String version, double hpDrainRate,
+    public Mapset(String name, List<HitObject> hitObjects, String version, double hpDrainRate,
                   double circleSize, double approachRate) {
         this.hitObjects = hitObjects;
         this.version = version;
         this.hpDrainRate = hpDrainRate;
         this.circleSize = circleSize;
         this.approachRate = approachRate;
+        this.name = name;
 
     }
 
@@ -48,5 +50,9 @@ public class Mapset {
 
     public double getApproachRate() {
         return approachRate;
+    }
+
+    public String getName() {
+        return name;
     }
 }
