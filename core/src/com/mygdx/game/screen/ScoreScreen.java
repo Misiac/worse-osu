@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.Game;
+import com.mygdx.game.MenuScreen;
 import com.mygdx.game.model.Score;
 
 public class ScoreScreen implements Screen {
@@ -22,6 +23,7 @@ public class ScoreScreen implements Screen {
     Texture header;
     Texture scoreSign;
     Texture grade;
+    Texture backButton;
     Sprite headerSprite;
     BitmapFont headerFont;
     BitmapFont scoreFont;
@@ -45,6 +47,7 @@ public class ScoreScreen implements Screen {
 
     public static final int TABLE_ROW_3_Y = (int) (Game.HEIGHT * 0.3);
     public static final int TABLE_ROW_4_Y = (int) (Game.HEIGHT * 0.1);
+    public static final int EXIT_BUTTON_SIDE = 128;
 
     public ScoreScreen(Game game, Score score) {
         this.game = game;
@@ -57,6 +60,7 @@ public class ScoreScreen implements Screen {
         combo = new Texture(Gdx.files.internal("score/combo.png"));
         acc = new Texture(Gdx.files.internal("score/acc.png"));
         scoreSign = new Texture(Gdx.files.internal("score/score.png"));
+        backButton = new Texture(Gdx.files.internal("backarrow.png"));
 
         header = new Texture(Gdx.files.internal("score/header.png"));
         headerSprite = new Sprite(header);
@@ -100,7 +104,19 @@ public class ScoreScreen implements Screen {
         game.batch.draw(combo, TABLE_ROW_1_X, TABLE_ROW_3_Y);
         game.batch.draw(acc, TABLE_ROW_2_X, TABLE_ROW_3_Y);
         game.batch.draw(scoreSign, (float) (TABLE_ROW_1_X + TABLE_ROW_2_X) / 2, TABLE_ROW_4_Y);
-        game.batch.draw(grade, (float) (Game.WIDTH*0.55), (float) Game.HEIGHT / 2 - (float) grade.getHeight() / 2);
+        game.batch.draw(grade, (float) (Game.WIDTH * 0.55), (float) Game.HEIGHT / 2 - (float) grade.getHeight() / 2);
+
+
+        if (Gdx.input.getX() < EXIT_BUTTON_SIDE && Gdx.input.getY() > Game.HEIGHT - EXIT_BUTTON_SIDE) {
+            game.batch.draw(backButton, 10, 7, EXIT_BUTTON_SIDE + 25, EXIT_BUTTON_SIDE + 25);
+
+            if (Gdx.input.isTouched()){
+                System.out.println("is touched");
+                game.setScreen(new MenuScreen(game));
+            }
+        } else {
+            game.batch.draw(backButton, 10, 7,EXIT_BUTTON_SIDE,EXIT_BUTTON_SIDE);
+        }
 
         // drawing values
         scoreFont.draw(game.batch, score.getCount300(), TABLE_ROW_1_X + valueOffset, TABLE_ROW_1_Y + textureHeightOffset);
@@ -112,8 +128,6 @@ public class ScoreScreen implements Screen {
         scoreFont.draw(game.batch, score.getTotalScore(), (float) (TABLE_ROW_1_X + TABLE_ROW_2_X) / 2 + valueOffset + OFFSET * 15, TABLE_ROW_4_Y + (float) scoreSign.getHeight() / 2 + OFFSET * 5);
 
         game.batch.end();
-
-
     }
 
     @Override
