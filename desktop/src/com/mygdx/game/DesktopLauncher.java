@@ -20,7 +20,7 @@ import java.util.List;
         config.setForegroundFPS(60);
         config.setResizable(false);
         config.setWindowedMode(Game.WIDTH, Game.HEIGHT);
-        config.setTitle("Osu! Clone");
+        config.setTitle("Circle Clicker");
 
 
         config.setWindowListener(new Lwjgl3WindowAdapter() {

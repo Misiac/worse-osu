@@ -56,9 +56,9 @@ public class MenuScreen implements Screen {
 
         game.batch.begin();
 
-        game.batch.draw(background, 0, 0);
+        game.batch.draw(background, 0, 0,Game.WIDTH,Game.HEIGHT);
         bitmapFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        bitmapFont.draw(game.batch, "Osu! Clone", x, (float) Gdx.graphics.getHeight() / 2 + 300);
+        bitmapFont.draw(game.batch, "Circle Clicker", x, (float) Gdx.graphics.getHeight() / 2 + 300);
         game.batch.draw(playButton, x, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
         game.batch.end();
 

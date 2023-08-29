@@ -2,12 +2,12 @@ package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.Game;
-import com.mygdx.game.MenuScreen;
 import com.mygdx.game.model.Score;
 
 public class ScoreScreen implements Screen {
@@ -27,6 +27,7 @@ public class ScoreScreen implements Screen {
     Sprite headerSprite;
     BitmapFont headerFont;
     BitmapFont scoreFont;
+    Sound uiClick;
 
     FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
     FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -61,9 +62,10 @@ public class ScoreScreen implements Screen {
         acc = new Texture(Gdx.files.internal("score/acc.png"));
         scoreSign = new Texture(Gdx.files.internal("score/score.png"));
         backButton = new Texture(Gdx.files.internal("backarrow.png"));
-
         header = new Texture(Gdx.files.internal("score/header.png"));
         headerSprite = new Sprite(header);
+        uiClick = Gdx.audio.newSound(Gdx.files.internal("uiClick.ogg"));
+
         headerSprite.setSize(Game.WIDTH, (float) Game.HEIGHT / 7);
         headerSprite.setColor(1, 1, 1, 0.7f);
         headerSprite.setCenter((float) Game.WIDTH / 2, Game.HEIGHT - (float) header.getHeight() / 2);
@@ -73,7 +75,6 @@ public class ScoreScreen implements Screen {
         parameter.size = SCORE_FONT_SIZE;
         scoreFont = generator.generateFont(parameter);
         generator.dispose();
-        System.out.println(score);
         valueOffset = hit300.getWidth() + OFFSET * 4;
         textureHeightOffset = hit0.getHeight() / 2 + OFFSET * 5;
 
@@ -110,12 +111,12 @@ public class ScoreScreen implements Screen {
         if (Gdx.input.getX() < EXIT_BUTTON_SIDE && Gdx.input.getY() > Game.HEIGHT - EXIT_BUTTON_SIDE) {
             game.batch.draw(backButton, 10, 7, EXIT_BUTTON_SIDE + 25, EXIT_BUTTON_SIDE + 25);
 
-            if (Gdx.input.isTouched()){
-                System.out.println("is touched");
+            if (Gdx.input.isTouched()) {
+                uiClick.play(0.40f);
                 game.setScreen(new MenuScreen(game));
             }
         } else {
-            game.batch.draw(backButton, 10, 7,EXIT_BUTTON_SIDE,EXIT_BUTTON_SIDE);
+            game.batch.draw(backButton, 10, 7, EXIT_BUTTON_SIDE, EXIT_BUTTON_SIDE);
         }
 
         // drawing values
