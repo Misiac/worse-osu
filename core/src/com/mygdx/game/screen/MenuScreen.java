@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.Game;
 import com.mygdx.game.data.MapLoader;
@@ -14,15 +15,18 @@ public class MenuScreen implements Screen {
 
     Game game;
     Texture exitButton;
+    Sprite exitButtonSprite;
     Texture playButton;
+    Sprite playButtonSprite;
+    Texture logo;
+    private int x;
 
-    private static final int EXIT_BUTTON_WIDTH = 360;
-    private static final int EXIT_BUTTON_HEIGHT = 340;
-    private static final int PLAY_BUTTON_WIDTH = 360;
-    private static final int PLAY_BUTTON_HEIGHT = 340;
+    private static final int BUTTON_WIDTH = 267;
+    private static final int BUTTON_HEIGHT = 42;
     public static final int EXIT_BUTTON_Y = 100;
-    public static final int PLAY_BUTTON_Y = 300;
+    public static final int PLAY_BUTTON_Y = 170;
     Texture background;
+
     BitmapFont bitmapFont;
     FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
     FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -31,13 +35,26 @@ public class MenuScreen implements Screen {
     public MenuScreen(Game game) {
         this.game = game;
         playButton = new Texture("play.png");
-        exitButton = new Texture("play.png"); // TODO: 07.08.2023
+        exitButton = new Texture("exit.png"); // TODO: 07.08.2023
+        logo = new Texture("logo.png"); // TODO: 07.08.2023
+        playButtonSprite = new Sprite(playButton);
+        exitButtonSprite = new Sprite(exitButton);
+        x = Game.WIDTH / 8 - (playButton.getHeight() / 2);
+
+        playButtonSprite.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        playButtonSprite.setColor(1, 1, 1, 0.7f);
+        playButtonSprite.setCenter(x, PLAY_BUTTON_Y);
+
+        exitButtonSprite.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        exitButtonSprite.setColor(1, 1, 1, 0.7f);
+        exitButtonSprite.setCenter(x, EXIT_BUTTON_Y);
 
         background = new Texture(Gdx.files.internal("menubg.png"));
 
         parameter.size = 80;
         bitmapFont = generator.generateFont(parameter);
         generator.dispose();
+
 
     }
 
@@ -50,19 +67,19 @@ public class MenuScreen implements Screen {
     public void render(float delta) {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
-
-
-        int x = Game.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2;
-
         game.batch.begin();
 
-        game.batch.draw(background, 0, 0,Game.WIDTH,Game.HEIGHT);
-        bitmapFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        bitmapFont.draw(game.batch, "Circle Clicker", x, (float) Gdx.graphics.getHeight() / 2 + 300);
-        game.batch.draw(playButton, x, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
+        game.batch.draw(background, 0, 0, Game.WIDTH, Game.HEIGHT);
+        game.batch.draw(logo, x + 100, (float) Gdx.graphics.getHeight() / 2 + 300);
+        playButtonSprite.draw(game.batch);
+        exitButtonSprite.draw(game.batch);
         game.batch.end();
 
-        if (Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > x && Game.HEIGHT - Gdx.input.getY() < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && Gdx.input.getY() > PLAY_BUTTON_Y) {
+        if (Gdx.input.getX() > x - BUTTON_WIDTH / 2 && // if play button is hovered over
+                Gdx.input.getX() < x + BUTTON_WIDTH / 2 &&
+                Gdx.input.getY() > Game.HEIGHT - (PLAY_BUTTON_Y + BUTTON_HEIGHT / 2) &&
+                Gdx.input.getY() < Game.HEIGHT - (PLAY_BUTTON_Y - BUTTON_HEIGHT / 2)) {
+
             if (Gdx.input.isTouched()) {
                 if (!game.files.isEmpty()) { // file drop listener
                     this.dispose();
@@ -76,6 +93,17 @@ public class MenuScreen implements Screen {
                     }
                 }
             }
+
+        }
+        if (Gdx.input.getX() > x - BUTTON_WIDTH / 2 && // if exit button is hovered over
+                Gdx.input.getX() < x + BUTTON_WIDTH / 2 &&
+                Gdx.input.getY() > Game.HEIGHT - (EXIT_BUTTON_Y + BUTTON_HEIGHT / 2) &&
+                Gdx.input.getY() < Game.HEIGHT - (EXIT_BUTTON_Y - BUTTON_HEIGHT / 2)) {
+
+            if (Gdx.input.isTouched()) {
+                Gdx.app.exit();
+            }
+
         }
 
     }
