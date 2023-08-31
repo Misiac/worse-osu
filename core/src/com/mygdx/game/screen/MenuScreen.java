@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.Game;
 import com.mygdx.game.data.MapLoader;
+import com.mygdx.game.model.Map;
 
 import java.io.IOException;
 
@@ -60,7 +61,7 @@ public class MenuScreen implements Screen {
         exitButtonSprite.setCenter(x, EXIT_BUTTON_Y);
 
         infoSprite.setColor(1, 1, 1, 0.7f);
-        infoSprite.setCenter(Game.WIDTH*0.8f, 300);
+        infoSprite.setCenter(Game.WIDTH * 0.8f, 300);
 
         background = new Texture(Gdx.files.internal("menubg.png"));
 
@@ -99,12 +100,12 @@ public class MenuScreen implements Screen {
                 if (!game.files.isEmpty()) { // file drop listener
 
                     if (isProperOszFile(game.files.get(game.files.size() - 1))) {
-                        // load map here
                         try {
-                            game.setScreen(new GameScreen(game));
+                            Map draggedMap = MapLoader.Load(game.files.get(0));
+                            game.setScreen(new GameScreen(game, draggedMap, 0));
                             this.dispose();
                         } catch (IOException e) {
-                            System.out.println(e.getMessage());
+                            throw new RuntimeException(e);
                         }
                     }
                 }

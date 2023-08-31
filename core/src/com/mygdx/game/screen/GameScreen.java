@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.Game;
 import com.mygdx.game.ScrollProcessor;
-import com.mygdx.game.data.MapLoader;
 import com.mygdx.game.model.*;
 
 import java.io.IOException;
@@ -64,6 +63,7 @@ public class GameScreen implements Screen {
     long startTimeReference;
     long timeFromStart;
     Map map;
+    int mapsetNumber;
     int combo; // maybe private all of these
     private int maxCombo;
     int objectsUntilNow;
@@ -94,7 +94,7 @@ public class GameScreen implements Screen {
     InputMultiplexer inputMultiplexer = new InputMultiplexer();
 
 
-    public GameScreen(Game game) throws IOException {  // TODO: 09.08.2023 throws
+    public GameScreen(Game game, Map map, int mapsetNumber) throws IOException {  // TODO: 09.08.2023 throws
         this.game = game;
 
         newWidth = (int) (640 * (Gdx.graphics.getHeight() / 480.0)); // works and is 1440
@@ -104,7 +104,8 @@ public class GameScreen implements Screen {
         yOffset = 48; // maximum object y property is 384
 
         resolutionMultiplierY = (Gdx.graphics.getHeight() / 480.0); // same but for Y
-        this.map = MapLoader.Load(game.files.get(0));
+        this.map = map;
+        this.mapsetNumber = mapsetNumber;
 
         prepareObjects();
 
