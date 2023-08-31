@@ -97,11 +97,12 @@ public class MenuScreen implements Screen {
 
             if (Gdx.input.isTouched()) {
                 if (!game.files.isEmpty()) { // file drop listener
-                    this.dispose();
+
                     if (isProperOszFile(game.files.get(game.files.size() - 1))) {
                         // load map here
                         try {
                             game.setScreen(new GameScreen(game));
+                            this.dispose();
                         } catch (IOException e) {
                             System.out.println(e.getMessage());
                         }
@@ -168,5 +169,3 @@ public class MenuScreen implements Screen {
 
     }
 }
-
-//Gdx.app.exit()
