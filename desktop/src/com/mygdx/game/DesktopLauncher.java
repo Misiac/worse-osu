@@ -7,11 +7,11 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import java.util.LinkedList;
 import java.util.List;
 
-    public class DesktopLauncher {
+public class DesktopLauncher {
     public static List<String> files = new LinkedList<>();
 
     public void addFile(String file) {
-        files.add(0,file);
+        files.add(0, file);
     }
 
     public static void main(String[] arg) {

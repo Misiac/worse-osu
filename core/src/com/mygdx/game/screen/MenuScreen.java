@@ -9,15 +9,15 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.ButtonInfo;
 import com.mygdx.game.Game;
 import com.mygdx.game.data.MapLoader;
-import com.mygdx.game.model.Map;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
 public class MenuScreen implements Screen {
 
+
     Game game;
-    Map draggedMap = null;
+
     Texture exitButton;
     Sprite exitButtonSprite;
 
@@ -29,6 +29,7 @@ public class MenuScreen implements Screen {
 
     Texture info;
     Sprite infoSprite;
+    Sprite mapsetsInfo;
 
     private int x;
     java.util.Map<ButtonInfo, Sprite> buttonMap;
@@ -38,6 +39,8 @@ public class MenuScreen implements Screen {
     public static final int EXIT_BUTTON_Y = 100;
     public static final int PLAY_BUTTON_Y = 170;
     public static final float ACTIVE_BUTTON_SCALING_FACTOR = 1.1f;
+    private static final float MAPSET_BUTTON_WIDTH = 485;
+    private static final float MAPSET_BUTTON_HEIGHT = 40;
     Texture background;
 
     BitmapFont bitmapFont;
@@ -54,9 +57,10 @@ public class MenuScreen implements Screen {
         button = new Texture(Gdx.files.internal("test.png"));
         playButtonSprite = new Sprite(playButton);
         exitButtonSprite = new Sprite(exitButton);
+        mapsetsInfo = new Sprite(new Texture(Gdx.files.internal("menu/mapsets.png")));
         infoSprite = new Sprite(info);
         buttonMap = new LinkedHashMap<>();
-
+        ButtonInfo.resetY();
         x = Game.WIDTH / 8 - (playButton.getHeight() / 2);
 
         playButtonSprite.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -69,6 +73,9 @@ public class MenuScreen implements Screen {
 
         infoSprite.setColor(1, 1, 1, 0.7f);
         infoSprite.setCenter(Game.WIDTH * 0.8f, 300);
+
+        mapsetsInfo.setCenter(ButtonInfo.getXCoordinate(),Game.HEIGHT-100);
+        mapsetsInfo.setColor(1, 1, 1, 0.9f);
 
         background = new Texture(Gdx.files.internal("menubg.png"));
 
@@ -86,6 +93,7 @@ public class MenuScreen implements Screen {
         game.batch.draw(background, 0, 0, Game.WIDTH, Game.HEIGHT);
         game.batch.draw(logo, x + 100, (float) Gdx.graphics.getHeight() / 2 + 300);
         infoSprite.draw(game.batch);
+        mapsetsInfo.draw(game.batch);
 
         if (checkIfObjectIsHoveredOver(x, PLAY_BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT)) {
 
@@ -95,9 +103,9 @@ public class MenuScreen implements Screen {
 
             if (isCorrectFileLoaded()) {
 
-                if (Gdx.input.isTouched() && draggedMap != null) {
+                if (Gdx.input.isTouched() && Game.draggedMap != null) {
                     try {
-                        game.setScreen(new GameScreen(game, draggedMap, 0));
+                        game.setScreen(new GameScreen(game, Game.draggedMap, 0));
                         this.dispose();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -127,18 +135,30 @@ public class MenuScreen implements Screen {
 
         for (ButtonInfo buttonInfo : buttonMap.keySet()) {
             Sprite thisSprite = buttonMap.get(buttonInfo);
-            thisSprite.draw(game.batch);
+
+            if (checkIfObjectIsHoveredOver(buttonInfo.getXCoordinate(), buttonInfo.getYCoordinate(), 265, 41)) {
+                thisSprite.setCenter(buttonInfo.getXCoordinate() - 24, buttonInfo.getYCoordinate());
+                thisSprite.setScale(ACTIVE_BUTTON_SCALING_FACTOR);
+                thisSprite.draw(game.batch);
+
+            } else {
+                thisSprite.setScale(1);
+                thisSprite.setCenter(buttonInfo.getXCoordinate(), buttonInfo.getYCoordinate());
+                thisSprite.draw(game.batch);
+            }
+
         }
         game.batch.end();
 
-        if (isCorrectFileLoaded()) { //
+        if (isCorrectFileLoaded()) {
             try {
-                if (draggedMap == null) {
-                    draggedMap = MapLoader.Load(game.files.get(0));
+                if (buttonMap.isEmpty()) {
+                    Game.draggedMap = MapLoader.Load(game.files.get(0));
 
-                    draggedMap.getMapsets().forEach(mapset -> {
+                    Game.draggedMap.getMapsets().forEach(mapset -> {
                         ButtonInfo buttonInfo = new ButtonInfo(mapset.getVersion());
                         Sprite sprite = new Sprite(button);
+                        sprite.setSize(MAPSET_BUTTON_WIDTH, MAPSET_BUTTON_HEIGHT);
                         sprite.setCenter(buttonInfo.getXCoordinate(), buttonInfo.getYCoordinate());
                         sprite.setColor(1, 1, 1, 0.7f);
                         buttonMap.put(buttonInfo, sprite);
@@ -155,6 +175,8 @@ public class MenuScreen implements Screen {
             if (MapLoader.isProperOszFile(game.files.get(0))) {
                 return true;
             }
+        } else if (Game.draggedMap != null) {
+            return true;
         }
         return false;
     }
