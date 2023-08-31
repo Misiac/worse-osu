@@ -44,7 +44,6 @@ public class MapLoader {
 
             String version;
             String name = mapsetPath.substring(mapsetPath.lastIndexOf("\\")+1, mapsetPath.lastIndexOf("."));
-            System.out.println(name);
             double hpDrainRate;
             double circleSize;
             double approachRate;
@@ -53,25 +52,21 @@ public class MapLoader {
                 line = reader.readLine();
             } while (!line.contains("Version"));
             version = line.substring(8);
-            System.out.println(version);
 
             do { // reads hp drain rate
                 line = reader.readLine();
             } while (!line.contains("HPDrainRate"));
             hpDrainRate = Double.parseDouble(line.substring(12));
-            System.out.println(hpDrainRate);
 
             do { // reads circle size
                 line = reader.readLine();
             } while (!line.contains("CircleSize"));
             circleSize = Double.parseDouble(line.substring(11));
-            System.out.println(circleSize);
 
             do { // reads approach rate
                 line = reader.readLine();
             } while (!line.contains("ApproachRate"));
             approachRate = Double.parseDouble(line.substring(13));
-            System.out.println(approachRate);
 
             do { // waits for HitObjects
                 line = reader.readLine();
