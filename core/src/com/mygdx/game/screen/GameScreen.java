@@ -108,7 +108,7 @@ public class GameScreen implements Screen {
 
         prepareObjects();
 
-        Pixmap pm = new Pixmap(Gdx.files.internal("cursor.png"));
+        Pixmap pm = new Pixmap(Gdx.files.internal("game/cursor.png"));
         Cursor cursor = Gdx.graphics.newCursor(pm, 64, 64);
         pm.dispose();
         Gdx.graphics.setCursor(cursor);
@@ -126,17 +126,23 @@ public class GameScreen implements Screen {
 
     private void prepareObjects() {
 
-        hitCircle = new Texture(Gdx.files.internal("hitcircle.png"));
-        hitCircleOverlay = new Texture(Gdx.files.internal("hitcircleoverlay.png"));
-        approachCircle = new Texture(Gdx.files.internal("approachcircle.png"));
+        hitCircle = new Texture(Gdx.files.internal("game/hitcircle.png"));
+        hitCircleOverlay = new Texture(Gdx.files.internal("game/hitcircleoverlay.png"));
+        approachCircle = new Texture(Gdx.files.internal("game/approachcircle.png"));
         generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         music = Gdx.audio.newSound(Gdx.files.internal(map.getAudioPath()));
-        hitsound = Gdx.audio.newSound(Gdx.files.internal("hitsound.ogg"));
-        comboBreak = Gdx.audio.newSound(Gdx.files.internal("combobreak.wav"));
-        miss = new Texture(Gdx.files.internal("hit0.png"));
-        hit50 = new Texture(Gdx.files.internal("hit50.png"));
-        hit100 = new Texture(Gdx.files.internal("hit100.png"));
+        hitsound = Gdx.audio.newSound(Gdx.files.internal("game/hitsound.ogg"));
+        comboBreak = Gdx.audio.newSound(Gdx.files.internal("game/combobreak.wav"));
+        miss = new Texture(Gdx.files.internal("game/hit0.png"));
+        hit50 = new Texture(Gdx.files.internal("game/hit50.png"));
+        hit100 = new Texture(Gdx.files.internal("game/hit100.png"));
+        healthBarBg = new Texture(Gdx.files.internal("game/scorebar-bg.png"));
+        healthBarColor = new Texture(Gdx.files.internal("game/scorebar-colour.png"));
+        healthBarRegion = new TextureRegion(healthBarColor, 0, 0, 700, healthBarColor.getHeight());
+        background = new Texture(Gdx.files.internal(map.getBgPath()));
+        backgroundSprite = new Sprite(background);
+
         combo = 0;
         maxCombo = 0;
         score = 0;
@@ -147,14 +153,11 @@ public class GameScreen implements Screen {
         objectsUntilNow = 0;
         inputMultiplexer.addProcessor(scrollProcessor);
         Gdx.input.setInputProcessor(inputMultiplexer);
-        background = new Texture(Gdx.files.internal(map.getBgPath()));
-        backgroundSprite = new Sprite(background);
+
         backgroundSprite.setColor(1, 1, 1, 0.1f);
         futureHitObjects.addAll(map.getMapsets().get(0).getHitObjects()); // add all objects at start from source
         backgroundSprite.setSize(Game.WIDTH, Game.HEIGHT);
-        healthBarBg = new Texture(Gdx.files.internal("scorebar-bg.png"));
-        healthBarColor = new Texture(Gdx.files.internal("scorebar-colour.png"));
-        healthBarRegion = new TextureRegion(healthBarColor, 0, 0, 700, healthBarColor.getHeight());
+
         health = 700;
         lastHitObjectTime = futureHitObjects.get(futureHitObjects.size() - 1).getTime();
     }
