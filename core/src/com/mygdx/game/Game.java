@@ -16,8 +16,6 @@ public class Game extends com.badlogic.gdx.Game {
     public void create() {
         batch = new SpriteBatch();
         this.setScreen(new MenuScreen(this));
-        System.out.println("test");
-
 
     }
 

@@ -25,6 +25,7 @@ public class MenuScreen implements Screen {
     private static final int BUTTON_HEIGHT = 42;
     public static final int EXIT_BUTTON_Y = 100;
     public static final int PLAY_BUTTON_Y = 170;
+    public static final float ACTIVE_BUTTON_SCALING_FACTOR = 1.1f;
     Texture background;
 
     BitmapFont bitmapFont;
@@ -71,14 +72,15 @@ public class MenuScreen implements Screen {
 
         game.batch.draw(background, 0, 0, Game.WIDTH, Game.HEIGHT);
         game.batch.draw(logo, x + 100, (float) Gdx.graphics.getHeight() / 2 + 300);
-        playButtonSprite.draw(game.batch);
-        exitButtonSprite.draw(game.batch);
-        game.batch.end();
 
         if (Gdx.input.getX() > x - BUTTON_WIDTH / 2 && // if play button is hovered over
                 Gdx.input.getX() < x + BUTTON_WIDTH / 2 &&
                 Gdx.input.getY() > Game.HEIGHT - (PLAY_BUTTON_Y + BUTTON_HEIGHT / 2) &&
                 Gdx.input.getY() < Game.HEIGHT - (PLAY_BUTTON_Y - BUTTON_HEIGHT / 2)) {
+
+            playButtonSprite.setCenter(x + (BUTTON_WIDTH * ACTIVE_BUTTON_SCALING_FACTOR - BUTTON_WIDTH), PLAY_BUTTON_Y);
+            playButtonSprite.setScale(ACTIVE_BUTTON_SCALING_FACTOR);
+            playButtonSprite.draw(game.batch);
 
             if (Gdx.input.isTouched()) {
                 if (!game.files.isEmpty()) { // file drop listener
@@ -93,18 +95,29 @@ public class MenuScreen implements Screen {
                     }
                 }
             }
-
+        } else {
+            playButtonSprite.setScale(1);
+            playButtonSprite.setCenter(x, PLAY_BUTTON_Y);
+            playButtonSprite.draw(game.batch);
         }
         if (Gdx.input.getX() > x - BUTTON_WIDTH / 2 && // if exit button is hovered over
                 Gdx.input.getX() < x + BUTTON_WIDTH / 2 &&
                 Gdx.input.getY() > Game.HEIGHT - (EXIT_BUTTON_Y + BUTTON_HEIGHT / 2) &&
                 Gdx.input.getY() < Game.HEIGHT - (EXIT_BUTTON_Y - BUTTON_HEIGHT / 2)) {
 
+            exitButtonSprite.setCenter(x + (BUTTON_WIDTH * ACTIVE_BUTTON_SCALING_FACTOR - BUTTON_WIDTH), EXIT_BUTTON_Y);
+            exitButtonSprite.setScale(ACTIVE_BUTTON_SCALING_FACTOR);
+            exitButtonSprite.draw(game.batch);
+
             if (Gdx.input.isTouched()) {
                 Gdx.app.exit();
             }
-
+        } else {
+            exitButtonSprite.setScale(1);
+            exitButtonSprite.setCenter(x, EXIT_BUTTON_Y);
+            exitButtonSprite.draw(game.batch);
         }
+        game.batch.end();
 
     }
 
