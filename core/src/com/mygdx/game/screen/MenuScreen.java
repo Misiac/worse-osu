@@ -16,9 +16,15 @@ public class MenuScreen implements Screen {
     Game game;
     Texture exitButton;
     Sprite exitButtonSprite;
+
     Texture playButton;
     Sprite playButtonSprite;
+
     Texture logo;
+
+    Texture info;
+    Sprite infoSprite;
+
     private int x;
 
     private static final int BUTTON_WIDTH = 267;
@@ -35,11 +41,14 @@ public class MenuScreen implements Screen {
 
     public MenuScreen(Game game) {
         this.game = game;
-        playButton = new Texture("play.png");
-        exitButton = new Texture("exit.png"); // TODO: 07.08.2023
-        logo = new Texture("logo.png"); // TODO: 07.08.2023
+        playButton = new Texture("menu/play.png");
+        exitButton = new Texture("menu/exit.png"); // TODO: 07.08.2023
+        logo = new Texture("menu/logo.png"); // TODO: 07.08.2023
+        info = new Texture(Gdx.files.internal("menu/info.png"));
         playButtonSprite = new Sprite(playButton);
         exitButtonSprite = new Sprite(exitButton);
+        infoSprite = new Sprite(info);
+
         x = Game.WIDTH / 8 - (playButton.getHeight() / 2);
 
         playButtonSprite.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -49,6 +58,9 @@ public class MenuScreen implements Screen {
         exitButtonSprite.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         exitButtonSprite.setColor(1, 1, 1, 0.7f);
         exitButtonSprite.setCenter(x, EXIT_BUTTON_Y);
+
+        infoSprite.setColor(1, 1, 1, 0.7f);
+        infoSprite.setCenter(Game.WIDTH*0.8f, 300);
 
         background = new Texture(Gdx.files.internal("menubg.png"));
 
@@ -72,6 +84,7 @@ public class MenuScreen implements Screen {
 
         game.batch.draw(background, 0, 0, Game.WIDTH, Game.HEIGHT);
         game.batch.draw(logo, x + 100, (float) Gdx.graphics.getHeight() / 2 + 300);
+        infoSprite.draw(game.batch);
 
         if (Gdx.input.getX() > x - BUTTON_WIDTH / 2 && // if play button is hovered over
                 Gdx.input.getX() < x + BUTTON_WIDTH / 2 &&
