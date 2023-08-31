@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class VisualEffect {
     private int timer;
-    private Texture texture;
-    private int xCoordinate;
-    private int yCoordinate;
+    private final Texture texture;
+    private final int xCoordinate;
+    private final int yCoordinate;
 
     public VisualEffect(Texture texture, int xCoordinate, int yCoordinate) {
         this.timer = 30;
