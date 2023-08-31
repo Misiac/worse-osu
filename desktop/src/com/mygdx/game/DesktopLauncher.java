@@ -11,7 +11,7 @@ import java.util.List;
     public static List<String> files = new LinkedList<>();
 
     public void addFile(String file) {
-        files.add(file);
+        files.add(0,file);
     }
 
     public static void main(String[] arg) {

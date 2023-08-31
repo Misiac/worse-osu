@@ -198,6 +198,15 @@ public class MapLoader {
         }
     }
 
+    public static boolean isProperOszFile(String path) {
+
+        String extension = MapLoader.getExtension(path);
+        if (extension.equals("osz")) {
+            return true;
+        }
+        return false;
+    }
+
     enum MapFileType {
         AUDIO("mp3"),
         HITSOUND("wav"),

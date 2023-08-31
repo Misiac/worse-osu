@@ -15,6 +15,7 @@ import java.io.IOException;
 public class MenuScreen implements Screen {
 
     Game game;
+    Map draggedMap = null;
     Texture exitButton;
     Sprite exitButtonSprite;
 
@@ -68,13 +69,6 @@ public class MenuScreen implements Screen {
         parameter.size = 80;
         bitmapFont = generator.generateFont(parameter);
         generator.dispose();
-
-
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override
@@ -96,20 +90,23 @@ public class MenuScreen implements Screen {
             playButtonSprite.setScale(ACTIVE_BUTTON_SCALING_FACTOR);
             playButtonSprite.draw(game.batch);
 
-            if (Gdx.input.isTouched()) {
-                if (!game.files.isEmpty()) { // file drop listener
+            if (isDragged()) {
+                try {
+                    if (draggedMap == null) draggedMap = MapLoader.Load(game.files.get(0));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
-                    if (isProperOszFile(game.files.get(game.files.size() - 1))) {
-                        try {
-                            Map draggedMap = MapLoader.Load(game.files.get(0));
-                            game.setScreen(new GameScreen(game, draggedMap, 0));
-                            this.dispose();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                if (Gdx.input.isTouched() && draggedMap != null) {
+                    try {
+                        game.setScreen(new GameScreen(game, draggedMap, 0));
+                        this.dispose();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
+
         } else {
             playButtonSprite.setScale(1);
             playButtonSprite.setCenter(x, PLAY_BUTTON_Y);
@@ -136,19 +133,26 @@ public class MenuScreen implements Screen {
 
     }
 
-    private boolean isProperOszFile(String path) {
-
-        String extension = MapLoader.getExtension(path);
-        if (extension.equals("osz")) {
-            return true;
+    private boolean isDragged() {
+        if (!game.files.isEmpty()) {
+            if (MapLoader.isProperOszFile(game.files.get(0))) {
+                return true;
+            }
         }
         return false;
     }
+
 
     @Override
     public void resize(int width, int height) {
 
     }
+
+    @Override
+    public void show() {
+
+    }
+
 
     @Override
     public void pause() {
