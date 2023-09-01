@@ -13,12 +13,41 @@ public class Game extends com.badlogic.gdx.Game {
     public static Map draggedMap = null;
     public SpriteBatch batch;
     public List<String> files;
+    public String mapFilePath;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         this.setScreen(new MenuScreen(this));
+        mapFilePath = "";
 
+    }
+
+    public boolean wasMapChanged() {
+//        System.out.println(files);
+//        try {
+//            if (files.get(0).equals(mapFilePath)) {
+//                mapFilePath = files.get(0);
+//                return true;
+//            }
+//            return false;
+//        } catch (IndexOutOfBoundsException e) {
+//            return false;
+//        }
+
+        try {
+            if (files == null) return false;
+            else {
+                if (mapFilePath.equals(files.get(0))) {
+                    return false;
+                } else {
+                    mapFilePath = files.get(0);
+                    return true;
+                }
+            }
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
     }
 
     public Game(List<String> files) {

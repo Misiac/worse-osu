@@ -11,6 +11,7 @@ public class DesktopLauncher {
     public static List<String> files = new LinkedList<>();
 
     public void addFile(String file) {
+        files.clear();
         files.add(0, file);
     }
 
