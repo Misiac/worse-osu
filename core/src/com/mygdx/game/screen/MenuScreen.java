@@ -31,7 +31,7 @@ public class MenuScreen implements Screen {
     Sprite infoSprite;
     Sprite mapsetsInfo;
 
-    private int x;
+    private final int x;
     java.util.Map<ButtonInfo, Sprite> buttonMap;
 
     private static final int BUTTON_WIDTH = 267;
@@ -44,7 +44,7 @@ public class MenuScreen implements Screen {
     Texture background;
 
     BitmapFont bitmapFont;
-    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
+    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/MonospaceTypewriter.ttf"));
     FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
 
@@ -74,12 +74,12 @@ public class MenuScreen implements Screen {
         infoSprite.setColor(1, 1, 1, 0.7f);
         infoSprite.setCenter(Game.WIDTH * 0.8f, 300);
 
-        mapsetsInfo.setCenter(ButtonInfo.getXCoordinate(),Game.HEIGHT-100);
+        mapsetsInfo.setCenter(ButtonInfo.getXCoordinate(), Game.HEIGHT - 100);
         mapsetsInfo.setColor(1, 1, 1, 0.9f);
 
         background = new Texture(Gdx.files.internal("menubg.png"));
 
-        parameter.size = 80;
+        parameter.size = 24;
         bitmapFont = generator.generateFont(parameter);
         generator.dispose();
     }
@@ -133,21 +133,25 @@ public class MenuScreen implements Screen {
             exitButtonSprite.draw(game.batch);
         }
 
-        for (ButtonInfo buttonInfo : buttonMap.keySet()) {
+        for (ButtonInfo buttonInfo : buttonMap.keySet()) { // render buttons
             Sprite thisSprite = buttonMap.get(buttonInfo);
 
-            if (checkIfObjectIsHoveredOver(buttonInfo.getXCoordinate(), buttonInfo.getYCoordinate(), 265, 41)) {
-                thisSprite.setCenter(buttonInfo.getXCoordinate() - 24, buttonInfo.getYCoordinate());
+            if (checkIfObjectIsHoveredOver(ButtonInfo.getXCoordinate(), buttonInfo.getYCoordinate(), (int) MAPSET_BUTTON_WIDTH, (int) MAPSET_BUTTON_HEIGHT)) {
+                thisSprite.setCenter(ButtonInfo.getXCoordinate() - 24, buttonInfo.getYCoordinate());
                 thisSprite.setScale(ACTIVE_BUTTON_SCALING_FACTOR);
                 thisSprite.draw(game.batch);
+                bitmapFont.getData().setScale(1.1f);
+
 
             } else {
                 thisSprite.setScale(1);
-                thisSprite.setCenter(buttonInfo.getXCoordinate(), buttonInfo.getYCoordinate());
+                thisSprite.setCenter(ButtonInfo.getXCoordinate(), buttonInfo.getYCoordinate());
                 thisSprite.draw(game.batch);
+                bitmapFont.getData().setScale(1);
             }
-
+            bitmapFont.draw(game.batch, buttonInfo.getMapsetVersion(), ButtonInfo.getXCoordinate() - MAPSET_BUTTON_WIDTH / 2 + 10, buttonInfo.getYCoordinate() + MAPSET_BUTTON_HEIGHT / 4);
         }
+
         game.batch.end();
 
         if (isCorrectFileLoaded()) {
@@ -159,7 +163,7 @@ public class MenuScreen implements Screen {
                         ButtonInfo buttonInfo = new ButtonInfo(mapset.getVersion());
                         Sprite sprite = new Sprite(button);
                         sprite.setSize(MAPSET_BUTTON_WIDTH, MAPSET_BUTTON_HEIGHT);
-                        sprite.setCenter(buttonInfo.getXCoordinate(), buttonInfo.getYCoordinate());
+                        sprite.setCenter(ButtonInfo.getXCoordinate(), buttonInfo.getYCoordinate());
                         sprite.setColor(1, 1, 1, 0.7f);
                         buttonMap.put(buttonInfo, sprite);
                     });
@@ -172,24 +176,16 @@ public class MenuScreen implements Screen {
 
     private boolean isCorrectFileLoaded() {
         if (!game.files.isEmpty()) {
-            if (MapLoader.isProperOszFile(game.files.get(0))) {
-                return true;
-            }
-        } else if (Game.draggedMap != null) {
-            return true;
-        }
-        return false;
+            return MapLoader.isProperOszFile(game.files.get(0));
+        } else return Game.draggedMap != null;
     }
 
     private boolean checkIfObjectIsHoveredOver(int x, int y, int objectWidth, int objectHeight) {
 
-        if (Gdx.input.getX() > x - objectWidth / 2 &&
+        return Gdx.input.getX() > x - objectWidth / 2 &&
                 Gdx.input.getX() < x + objectWidth / 2 &&
                 Gdx.input.getY() > Game.HEIGHT - (y + objectHeight / 2) &&
-                Gdx.input.getY() < Game.HEIGHT - (y - objectHeight / 2)) {
-            return true;
-        }
-        return false;
+                Gdx.input.getY() < Game.HEIGHT - (y - objectHeight / 2);
     }
 
     @Override

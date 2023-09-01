@@ -184,8 +184,8 @@ public class GameScreen implements Screen {
         }
         music.setVolume(musicId, scrollProcessor.getMusicVolume());
         filterHitObjects();
-
         healthBarRegion.setRegionWidth(calculateHealth());
+
         game.batch.begin();
         backgroundSprite.draw(game.batch);
         game.batch.draw(healthBarBg, 0, Game.HEIGHT - healthBarBg.getHeight());
