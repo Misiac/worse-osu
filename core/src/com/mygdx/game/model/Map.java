@@ -34,4 +34,13 @@ public class Map {
     public String getBgPath() {
         return bgPath;
     }
+
+    public int lookupNumber(String mapsetVersion) {
+        int i = 0;
+        for (Mapset mapset : mapsets) {
+            if (mapsetVersion.equals(mapset.getVersion())) return i;
+            i++;
+        }
+        return -1;
+    }
 }

@@ -1,6 +1,7 @@
 package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -31,6 +32,7 @@ public class MenuScreen implements Screen {
     Sprite infoSprite;
     Sprite mapsetsInfo;
 
+    int choosenMapsetNumber;
     private final int x;
     java.util.Map<ButtonInfo, Sprite> buttonMap;
 
@@ -103,9 +105,9 @@ public class MenuScreen implements Screen {
 
             if (isCorrectFileLoaded()) {
 
-                if (Gdx.input.isTouched() && Game.draggedMap != null) {
+                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && Game.draggedMap != null) {
                     try {
-                        game.setScreen(new GameScreen(game, Game.draggedMap, 0));
+                        game.setScreen(new GameScreen(game, Game.draggedMap, choosenMapsetNumber));
                         this.dispose();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -124,7 +126,7 @@ public class MenuScreen implements Screen {
             exitButtonSprite.setScale(ACTIVE_BUTTON_SCALING_FACTOR);
             exitButtonSprite.draw(game.batch);
 
-            if (Gdx.input.isTouched()) {
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
                 Gdx.app.exit();
             }
         } else {
@@ -140,7 +142,11 @@ public class MenuScreen implements Screen {
                 thisSprite.setCenter(ButtonInfo.getXCoordinate() - 24, buttonInfo.getYCoordinate());
                 thisSprite.setScale(ACTIVE_BUTTON_SCALING_FACTOR);
                 thisSprite.draw(game.batch);
-                bitmapFont.getData().setScale(1.1f);
+                bitmapFont.getData().setScale(1.12f);
+                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                    choosenMapsetNumber = Game.draggedMap.lookupNumber(buttonInfo.getMapsetVersion());
+                    System.out.println(choosenMapsetNumber);
+                }
 
 
             } else {

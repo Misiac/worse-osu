@@ -156,7 +156,7 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         backgroundSprite.setColor(1, 1, 1, 0.1f);
-        futureHitObjects.addAll(map.getMapsets().get(0).getHitObjects()); // add all objects at start from source
+        futureHitObjects.addAll(map.getMapsets().get(mapsetNumber).getHitObjects()); // add all objects at start from source
         backgroundSprite.setSize(Game.WIDTH, Game.HEIGHT);
 
         health = 700;
