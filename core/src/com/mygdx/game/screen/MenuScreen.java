@@ -3,6 +3,8 @@ package com.mygdx.game.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -84,6 +86,11 @@ public class MenuScreen implements Screen {
         parameter.size = 24;
         bitmapFont = generator.generateFont(parameter);
         generator.dispose();
+
+        Pixmap pm = new Pixmap(Gdx.files.internal("game/cursor.png"));
+        Cursor cursor = Gdx.graphics.newCursor(pm, 64, 64);
+        pm.dispose();
+        Gdx.graphics.setCursor(cursor);
     }
 
     @Override
@@ -106,12 +113,8 @@ public class MenuScreen implements Screen {
             if (isCorrectFileLoaded()) {
 
                 if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && Game.draggedMap != null) {
-                    try {
-                        game.setScreen(new GameScreen(game, Game.draggedMap, choosenMapsetNumber));
-                        this.dispose();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    game.setScreen(new GameScreen(game, Game.draggedMap, choosenMapsetNumber));
+                    this.dispose();
                 }
             }
 

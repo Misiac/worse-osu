@@ -1,5 +1,6 @@
 package com.mygdx.game.model;
 
+@SuppressWarnings("ALL")
 public enum CircleNumber {
 
 
