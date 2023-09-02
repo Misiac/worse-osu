@@ -27,10 +27,6 @@ public abstract class HitObject {
         return time;
     }
 
-    public int getType() {
-        return type;
-    }
-
     public int getNumber() {
         return number;
     }

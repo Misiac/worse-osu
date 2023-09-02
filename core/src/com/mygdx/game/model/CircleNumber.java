@@ -23,7 +23,7 @@ public enum CircleNumber {
 
     N9("numbers/default-9.png");
 
-    String path;
+    final String path;
 
 
     CircleNumber(String path) {

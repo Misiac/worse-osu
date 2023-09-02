@@ -15,15 +15,11 @@ public enum Grade {
 
     X("score/rankingX.png");
 
-    String path;
+    final String path;
 
 
     Grade(String path) {
         this.path = path;
-    }
-
-    public String getPath() {
-        return path;
     }
 
 }

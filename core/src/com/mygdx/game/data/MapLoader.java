@@ -43,7 +43,7 @@ public class MapLoader {
             String line;
 
             String version;
-            String name = mapsetPath.substring(mapsetPath.lastIndexOf("\\")+1, mapsetPath.lastIndexOf("."));
+            String name = mapsetPath.substring(mapsetPath.lastIndexOf("\\") + 1, mapsetPath.lastIndexOf("."));
             double hpDrainRate;
             double circleSize;
             double approachRate;
@@ -92,7 +92,7 @@ public class MapLoader {
                 }
                 counter++;
             }
-            return new Mapset(name,hitObjects, version, hpDrainRate, circleSize, approachRate);
+            return new Mapset(name, hitObjects, version, hpDrainRate, circleSize, approachRate);
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -154,7 +154,8 @@ public class MapLoader {
         if (destDir.exists()) {
             deleteFolder(destDir);
         } else if (!destDir.exists()) {
-            destDir.mkdir();
+
+            if (!destDir.mkdir()) System.out.println("Folder creation error");
         }
 
         try (ZipInputStream zipIn = new ZipInputStream(Files.newInputStream(Paths.get(path)))) {
@@ -171,7 +172,8 @@ public class MapLoader {
                     }
                 } else {
                     File dir = new File(filePath);
-                    dir.mkdir();
+
+                    if (!dir.mkdir()) System.out.println("Folder creation error");
                 }
                 zipIn.closeEntry();
                 entry = zipIn.getNextEntry();
@@ -187,7 +189,7 @@ public class MapLoader {
                 if (f.isDirectory()) {
                     deleteFolder(f);
                 } else {
-                    f.delete();
+                    if (!f.delete()) System.out.println("Folder deletion error");
                 }
             }
         }
@@ -196,10 +198,7 @@ public class MapLoader {
     public static boolean isProperOszFile(String path) {
 
         String extension = MapLoader.getExtension(path);
-        if (extension.equals("osz")) {
-            return true;
-        }
-        return false;
+        return extension.equals("osz");
     }
 
     enum MapFileType {
@@ -212,10 +211,6 @@ public class MapLoader {
 
         MapFileType(String extension) {
             this.extension = extension;
-        }
-
-        public String getExtension() {
-            return extension;
         }
 
     }

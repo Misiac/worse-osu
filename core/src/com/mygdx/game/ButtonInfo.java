@@ -1,9 +1,9 @@
 package com.mygdx.game;
 
 public class ButtonInfo {
-    private String mapsetVersion;
-    private static int xCoordinate;
-    private int yCoordinate;
+    private final String mapsetVersion;
+    private static final int xCoordinate;
+    private final int yCoordinate;
     private static int PREVIOUS_Y = Game.HEIGHT - 100 - 50;
 
     static {

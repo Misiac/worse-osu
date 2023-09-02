@@ -3,18 +3,18 @@ package com.mygdx.game.model;
 public class Score {
 
     // change the types in constructor instead of getters
-    private String mapName;
-    private String playDate;
-    private String playTime;
-    private int count300;
-    private int count100;
-    private int count50;
-    private int count0;
-    private int maxCombo;
-    private String accuracy;
-    private Grade grade;
-    private long totalScore;
-    private boolean loseFlag;
+    private final String mapName;
+    private final String playDate;
+    private final String playTime;
+    private final int count300;
+    private final int count100;
+    private final int count50;
+    private final int count0;
+    private final int maxCombo;
+    private final String accuracy;
+    private final Grade grade;
+    private final long totalScore;
+    private final boolean loseFlag;
 
     public Score(String mapName, String playDate, String playTime, int count300, int count100, int count50, int count0, int maxCombo, long totalScore, String accuracy, boolean loseFlag) {
         this.mapName = mapName;
@@ -103,7 +103,6 @@ public class Score {
     }
 
     public String getAccuracy() {
-//        System.out.println(accuracy);
         return String.valueOf(accuracy);
     }
 }

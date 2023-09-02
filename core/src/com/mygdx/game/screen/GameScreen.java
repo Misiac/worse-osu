@@ -189,7 +189,7 @@ public class GameScreen implements Screen {
         game.batch.begin();
         backgroundSprite.draw(game.batch);
         game.batch.draw(healthBarBg, 0, Game.HEIGHT - healthBarBg.getHeight());
-        game.batch.draw(healthBarRegion, 3, Game.HEIGHT - healthBarBg.getHeight() / 2 - 3);
+        game.batch.draw(healthBarRegion, 3, Game.HEIGHT - (float) healthBarBg.getHeight() / 2 - 3);
 
         bitmapComboFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         bitmapScoreFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -256,10 +256,7 @@ public class GameScreen implements Screen {
         }
 
         if (health <= 0 || timeFromStart > (lastHitObjectTime + 1000)) { // user has lost or completed the map
-            boolean loseFlag = false;
-            if (health <= 0) {
-                loseFlag = true;
-            }
+            boolean loseFlag = health <= 0;
             music.stop();
             game.setScreen(new ScoreScreen(game, new Score(
                     map.getMapsets().get(0).getName(),
@@ -377,10 +374,7 @@ public class GameScreen implements Screen {
         double distance = Math.sqrt(
                 Math.pow(x - (inputX - 64), 2) + Math.pow(y - (inputY - 64), 2)
         );
-        if (distance < 64) {
-            return true;
-        }
-        return false;
+        return distance < 64;
     }
 
     private int calculateApproachScale(long timeFromStart, long circleHitTime) {

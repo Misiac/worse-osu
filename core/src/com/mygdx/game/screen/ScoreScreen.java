@@ -11,8 +11,8 @@ import com.mygdx.game.Game;
 import com.mygdx.game.model.Score;
 
 public class ScoreScreen implements Screen {
-    private Game game;
-    private Score score;
+    private final Game game;
+    private final Score score;
 
     Texture hit300;
     Texture hit100;

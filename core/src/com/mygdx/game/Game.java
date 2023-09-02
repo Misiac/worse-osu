@@ -24,17 +24,6 @@ public class Game extends com.badlogic.gdx.Game {
     }
 
     public boolean wasMapChanged() {
-//        System.out.println(files);
-//        try {
-//            if (files.get(0).equals(mapFilePath)) {
-//                mapFilePath = files.get(0);
-//                return true;
-//            }
-//            return false;
-//        } catch (IndexOutOfBoundsException e) {
-//            return false;
-//        }
-
         try {
             if (files == null) return false;
             else {

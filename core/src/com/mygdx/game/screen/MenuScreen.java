@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.ButtonInfo;
 import com.mygdx.game.Game;
 import com.mygdx.game.data.MapLoader;
-import com.mygdx.game.model.Map;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -34,7 +33,6 @@ public class MenuScreen implements Screen {
     Sprite mapsetsInfo;
 
     int choosenMapsetNumber;
-    Map loadedMap;
     private final int x;
     java.util.Map<ButtonInfo, Sprite> buttonMap;
 
@@ -147,7 +145,6 @@ public class MenuScreen implements Screen {
                 bitmapFont.getData().setScale(1.12f);
                 if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
                     choosenMapsetNumber = Game.draggedMap.lookupNumber(buttonInfo.getMapsetVersion());
-                    System.out.println(choosenMapsetNumber);
                 }
 
 
@@ -185,7 +182,6 @@ public class MenuScreen implements Screen {
                 throw new RuntimeException(e);
             }
         }
-        game.files.forEach(System.out::println);
     }
 
     private boolean isCorrectFileLoaded() {

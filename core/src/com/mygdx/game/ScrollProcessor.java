@@ -62,7 +62,6 @@ public class ScrollProcessor implements InputProcessor {
             if (effectVolume <= 1 || musicVolume <= 1) {
                 effectVolume += JUMP;
                 musicVolume += JUMP;
-//                System.out.println("volume up");
             }
         } else if (amountY == 1.0) {
             if (effectVolume >= 0 || musicVolume >= 0) {
@@ -72,11 +71,9 @@ public class ScrollProcessor implements InputProcessor {
                     effectVolume = 0;
                     musicVolume = 0;
                 }
-//                System.out.println("volume down");
             }
         }
-//        System.out.println("amount Y " + amountY);
-//        System.out.println("music volume -> " + musicVolume);
+
         return false;
     }
 }
