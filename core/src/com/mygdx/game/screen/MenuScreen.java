@@ -3,6 +3,7 @@ package com.mygdx.game.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,9 +20,9 @@ import java.util.LinkedHashMap;
 public class MenuScreen implements Screen {
 
     Game game;
+    Sound uiClick;
 
     // CONSTANTS
-
     private static final int BUTTON_WIDTH = 267;
     private static final int BUTTON_HEIGHT = 42;
     private static final int EXIT_BUTTON_Y = 100;
@@ -29,6 +30,7 @@ public class MenuScreen implements Screen {
     private static final float ACTIVE_BUTTON_SCALING_FACTOR = 1.1f;
     private static final float MAPSET_BUTTON_WIDTH = 485;
     private static final float MAPSET_BUTTON_HEIGHT = 40;
+    private static final float CLICK_VOLUME = 0.40f;
 
     // TEXTURES
     private Texture playButton;
@@ -72,6 +74,7 @@ public class MenuScreen implements Screen {
         infoSprite = new Sprite(info);
         buttonMap = new LinkedHashMap<>();
         background = new Texture(Gdx.files.internal("menubg.png"));
+        uiClick = Gdx.audio.newSound(Gdx.files.internal("uiClick.ogg"));
 
         playButtonSprite.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         playButtonSprite.setColor(1, 1, 1, 0.7f);
@@ -117,11 +120,11 @@ public class MenuScreen implements Screen {
             if (isCorrectFileLoaded()) {
 
                 if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && Game.draggedMap != null) {
+                    uiClick.play(CLICK_VOLUME);
                     game.setScreen(new GameScreen(game, Game.draggedMap, choosenMapsetNumber));
                     this.dispose();
                 }
             }
-
         } else {
             playButtonSprite.setScale(1);
             playButtonSprite.setCenter(x, PLAY_BUTTON_Y);
@@ -151,6 +154,7 @@ public class MenuScreen implements Screen {
                 thisSprite.draw(game.batch);
                 bitmapFont.getData().setScale(1.12f);
                 if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                    uiClick.play(CLICK_VOLUME);
                     choosenMapsetNumber = Game.draggedMap.lookupNumber(buttonInfo.getMapsetVersion());
                 }
 
