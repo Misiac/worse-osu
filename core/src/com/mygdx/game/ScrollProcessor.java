@@ -6,7 +6,28 @@ public class ScrollProcessor implements InputProcessor {
 
     private float effectVolume = 0.1f;
     private float musicVolume = 0.1f;
-    public static final float JUMP = 0.05f;
+    private static final float JUMP = 0.05f;
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        if (amountY == -1.0) {
+            if (effectVolume <= 1 || musicVolume <= 1) {
+                effectVolume += JUMP;
+                musicVolume += JUMP;
+            }
+        } else if (amountY == 1.0) {
+            if (effectVolume >= 0 || musicVolume >= 0) {
+                effectVolume -= JUMP;
+                musicVolume -= JUMP;
+                if (effectVolume - JUMP < 0 || musicVolume - JUMP < 0) {
+                    effectVolume = 0;
+                    musicVolume = 0;
+                }
+            }
+        }
+
+        return false;
+    }
 
     public float getEffectVolume() {
         return effectVolume;
@@ -56,24 +77,5 @@ public class ScrollProcessor implements InputProcessor {
         return false;
     }
 
-    @Override
-    public boolean scrolled(float amountX, float amountY) {
-        if (amountY == -1.0) {
-            if (effectVolume <= 1 || musicVolume <= 1) {
-                effectVolume += JUMP;
-                musicVolume += JUMP;
-            }
-        } else if (amountY == 1.0) {
-            if (effectVolume >= 0 || musicVolume >= 0) {
-                effectVolume -= JUMP;
-                musicVolume -= JUMP;
-                if (effectVolume - JUMP < 0 || musicVolume - JUMP < 0) {
-                    effectVolume = 0;
-                    musicVolume = 0;
-                }
-            }
-        }
 
-        return false;
-    }
 }

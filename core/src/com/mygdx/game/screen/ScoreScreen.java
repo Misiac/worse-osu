@@ -11,49 +11,54 @@ import com.mygdx.game.Game;
 import com.mygdx.game.model.Score;
 
 public class ScoreScreen implements Screen {
-    private final Game game;
+    Game game;
     private final Score score;
 
-    Texture hit300;
-    Texture hit100;
-    Texture hit50;
-    Texture hit0;
-    Texture combo;
-    Texture acc;
-    Texture header;
-    Texture scoreSign;
-    Texture grade;
-    Texture backButton;
-    Sprite headerSprite;
-    BitmapFont headerFont;
-    BitmapFont scoreFont;
-    Sound uiClick;
+    private Texture hit300;
+    private Texture hit100;
+    private Texture hit50;
+    private Texture hit0;
+    private Texture combo;
+    private Texture acc;
+    private Texture scoreSign;
+    private Texture grade;
+    private Texture backButton;
+    private Sprite headerSprite;
+    private BitmapFont headerFont;
+    private BitmapFont scoreFont;
+    private Sound uiClick;
 
-    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
-    FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-    Texture background = new Texture(Gdx.files.internal("menubg.png"));
-    public static final int OFFSET = 5;
-    public static final int HEADER_FONT_SIZE = 35;
-    public static final int SCORE_FONT_SIZE = 70;
-    int valueOffset;
-    int textureHeightOffset;
+    private final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
+    private final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    private Texture background;
+    private static final int OFFSET = 5;
+    private static final int HEADER_FONT_SIZE = 35;
+    private static final int SCORE_FONT_SIZE = 70;
+    private final int valueOffset;
+    private final int textureHeightOffset;
 
     // TABLE CONSTANTS
-    public static final int TABLE_ROW_1_X = (int) (Game.WIDTH * 0.07);
-    public static final int TABLE_ROW_2_X = (int) (Game.WIDTH * 0.3);
+    private static final int TABLE_ROW_1_X = (int) (Game.WIDTH * 0.07);
+    private static final int TABLE_ROW_2_X = (int) (Game.WIDTH * 0.3);
 
-    public static final int TABLE_ROW_1_Y = (int) (Game.HEIGHT * 0.7);
+    private static final int TABLE_ROW_1_Y = (int) (Game.HEIGHT * 0.7);
 
-    public static final int TABLE_ROW_2_Y = (int) (Game.HEIGHT * 0.5);
+    private static final int TABLE_ROW_2_Y = (int) (Game.HEIGHT * 0.5);
 
-    public static final int TABLE_ROW_3_Y = (int) (Game.HEIGHT * 0.3);
-    public static final int TABLE_ROW_4_Y = (int) (Game.HEIGHT * 0.1);
-    public static final int EXIT_BUTTON_SIDE = 128;
+    private static final int TABLE_ROW_3_Y = (int) (Game.HEIGHT * 0.3);
+    private static final int TABLE_ROW_4_Y = (int) (Game.HEIGHT * 0.1);
+    private static final int EXIT_BUTTON_SIDE = 128;
 
     public ScoreScreen(Game game, Score score) {
         this.game = game;
         this.score = score;
+        prepareObjects();
 
+        valueOffset = hit300.getWidth() + OFFSET * 4;
+        textureHeightOffset = hit0.getHeight() / 2 + OFFSET * 5;
+    }
+
+    private void prepareObjects() {
         hit300 = new Texture(Gdx.files.internal("score/hit300.png"));
         hit100 = new Texture(Gdx.files.internal("score/hit100.png"));
         hit50 = new Texture(Gdx.files.internal("score/hit50.png"));
@@ -62,7 +67,9 @@ public class ScoreScreen implements Screen {
         acc = new Texture(Gdx.files.internal("score/acc.png"));
         scoreSign = new Texture(Gdx.files.internal("score/score.png"));
         backButton = new Texture(Gdx.files.internal("backarrow.png"));
-        header = new Texture(Gdx.files.internal("score/header.png"));
+        Texture header = new Texture(Gdx.files.internal("score/header.png"));
+        background = new Texture(Gdx.files.internal("menubg.png"));
+        grade = new Texture(Gdx.files.internal(score.getGradePath()));
         headerSprite = new Sprite(header);
         uiClick = Gdx.audio.newSound(Gdx.files.internal("uiClick.ogg"));
 
@@ -75,10 +82,6 @@ public class ScoreScreen implements Screen {
         parameter.size = SCORE_FONT_SIZE;
         scoreFont = generator.generateFont(parameter);
         generator.dispose();
-        valueOffset = hit300.getWidth() + OFFSET * 4;
-        textureHeightOffset = hit0.getHeight() / 2 + OFFSET * 5;
-
-        grade = new Texture(Gdx.files.internal(score.getGradePath()));
     }
 
     @Override

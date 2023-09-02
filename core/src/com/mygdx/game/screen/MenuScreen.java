@@ -18,54 +18,60 @@ import java.util.LinkedHashMap;
 
 public class MenuScreen implements Screen {
 
-
     Game game;
 
-    Texture exitButton;
-    Sprite exitButtonSprite;
-
-    Texture playButton;
-    Sprite playButtonSprite;
-
-    Texture logo;
-    Texture button;
-
-    Texture info;
-    Sprite infoSprite;
-    Sprite mapsetsInfo;
-
-    int choosenMapsetNumber;
-    private final int x;
-    java.util.Map<ButtonInfo, Sprite> buttonMap;
+    // CONSTANTS
 
     private static final int BUTTON_WIDTH = 267;
     private static final int BUTTON_HEIGHT = 42;
-    public static final int EXIT_BUTTON_Y = 100;
-    public static final int PLAY_BUTTON_Y = 170;
-    public static final float ACTIVE_BUTTON_SCALING_FACTOR = 1.1f;
+    private static final int EXIT_BUTTON_Y = 100;
+    private static final int PLAY_BUTTON_Y = 170;
+    private static final float ACTIVE_BUTTON_SCALING_FACTOR = 1.1f;
     private static final float MAPSET_BUTTON_WIDTH = 485;
     private static final float MAPSET_BUTTON_HEIGHT = 40;
-    Texture background;
 
-    BitmapFont bitmapFont;
-    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/MonospaceTypewriter.ttf"));
-    FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    // TEXTURES
+    private Texture playButton;
+    private Texture logo;
+    private Texture button;
+    private Texture background;
+    private Sprite infoSprite;
+    private Sprite mapsetsInfo;
+    private Sprite exitButtonSprite;
+    private Sprite playButtonSprite;
+
+    // FIELDS
+    private int choosenMapsetNumber;
+    private final int x;
+    private java.util.Map<ButtonInfo, Sprite> buttonMap;
+
+    // FONTS
+    private BitmapFont bitmapFont;
+    private final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/MonospaceTypewriter.ttf"));
+    private final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
 
     public MenuScreen(Game game) {
         this.game = game;
+        prepareObjects();
+        ButtonInfo.resetY();
+
+        x = Game.WIDTH / 8 - (playButton.getHeight() / 2);
+
+    }
+
+    private void prepareObjects() {
         playButton = new Texture("menu/play.png");
-        exitButton = new Texture("menu/exit.png"); // TODO: 07.08.2023
-        logo = new Texture("menu/logo.png"); // TODO: 07.08.2023
-        info = new Texture(Gdx.files.internal("menu/info.png"));
+        Texture exitButton = new Texture("menu/exit.png");
+        logo = new Texture("menu/logo.png");
+        Texture info = new Texture(Gdx.files.internal("menu/info.png"));
         button = new Texture(Gdx.files.internal("test.png"));
         playButtonSprite = new Sprite(playButton);
         exitButtonSprite = new Sprite(exitButton);
         mapsetsInfo = new Sprite(new Texture(Gdx.files.internal("menu/mapsets.png")));
         infoSprite = new Sprite(info);
         buttonMap = new LinkedHashMap<>();
-        ButtonInfo.resetY();
-        x = Game.WIDTH / 8 - (playButton.getHeight() / 2);
+        background = new Texture(Gdx.files.internal("menubg.png"));
 
         playButtonSprite.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         playButtonSprite.setColor(1, 1, 1, 0.7f);
@@ -80,8 +86,6 @@ public class MenuScreen implements Screen {
 
         mapsetsInfo.setCenter(ButtonInfo.getXCoordinate(), Game.HEIGHT - 100);
         mapsetsInfo.setColor(1, 1, 1, 0.9f);
-
-        background = new Texture(Gdx.files.internal("menubg.png"));
 
         parameter.size = 24;
         bitmapFont = generator.generateFont(parameter);
@@ -149,7 +153,6 @@ public class MenuScreen implements Screen {
                 if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
                     choosenMapsetNumber = Game.draggedMap.lookupNumber(buttonInfo.getMapsetVersion());
                 }
-
 
             } else {
                 thisSprite.setScale(1);

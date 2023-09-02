@@ -2,30 +2,29 @@ package com.mygdx.game.model;
 
 public class Score {
 
-    // change the types in constructor instead of getters
     private final String mapName;
     private final String playDate;
     private final String playTime;
-    private final int count300;
-    private final int count100;
-    private final int count50;
-    private final int count0;
-    private final int maxCombo;
+    private final String count300;
+    private final String count100;
+    private final String count50;
+    private final String count0;
+    private final String maxCombo;
     private final String accuracy;
     private final Grade grade;
-    private final long totalScore;
+    private final String totalScore;
     private final boolean loseFlag;
 
     public Score(String mapName, String playDate, String playTime, int count300, int count100, int count50, int count0, int maxCombo, long totalScore, String accuracy, boolean loseFlag) {
         this.mapName = mapName;
         this.playDate = playDate;
         this.playTime = playTime;
-        this.count300 = count300;
-        this.count100 = count100;
-        this.count50 = count50;
-        this.count0 = count0;
-        this.maxCombo = maxCombo;
-        this.totalScore = totalScore;
+        this.count300 = String.valueOf(count300);
+        this.count100 = String.valueOf(count100);
+        this.count50 = String.valueOf(count50);
+        this.count0 = String.valueOf(count0);
+        this.maxCombo = String.valueOf(maxCombo);
+        this.totalScore = String.valueOf(totalScore);
         this.accuracy = accuracy;
         this.loseFlag = loseFlag;
         grade = calculateGrade();
@@ -40,7 +39,7 @@ public class Score {
         else if (acc < 80) return Grade.B;
         else if (acc < 90) return Grade.A;
         else {
-            if (count0 == 0) return Grade.S;
+            if (count0.equals("0")) return Grade.S;
             else return Grade.A;
         }
     }
@@ -75,23 +74,23 @@ public class Score {
     }
 
     public String getCount300() {
-        return String.valueOf(count300);
+        return count300;
     }
 
     public String getCount100() {
-        return String.valueOf(count100);
+        return count100;
     }
 
     public String getCount50() {
-        return String.valueOf(count50);
+        return count50;
     }
 
     public String getCount0() {
-        return String.valueOf(count0);
+        return count0;
     }
 
     public String getMaxCombo() {
-        return String.valueOf(maxCombo);
+        return maxCombo;
     }
 
     public String getGradePath() {
@@ -99,10 +98,10 @@ public class Score {
     }
 
     public String getTotalScore() {
-        return String.valueOf(totalScore);
+        return totalScore;
     }
 
     public String getAccuracy() {
-        return String.valueOf(accuracy);
+        return accuracy;
     }
 }

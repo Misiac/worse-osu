@@ -2,7 +2,6 @@ package com.mygdx.game.model;
 
 public enum Grade {
 
-
     S("score/rankingS.png"),
 
     A("score/rankingA.png"),

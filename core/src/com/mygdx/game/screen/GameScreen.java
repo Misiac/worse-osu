@@ -306,7 +306,6 @@ public class GameScreen implements Screen {
 
     private int calculateObjectXPosition(int osuPixelX) { // calculates x property from osu pixel format to current user resolution
         return (int) ((osuPixelX * resolutionMultiplierY) + xOffset);
-
     }
 
     private int calculateObjectYPosition(int osuPixelY) { // calculates y property from osu pixel format to current user resolution
@@ -358,8 +357,7 @@ public class GameScreen implements Screen {
         int inputY = Math.abs(Gdx.input.getY() - newHeight); // Y 0 for cursor is top screen but for textures is down so there is a need for conversion
 
         double distance = Math.sqrt(
-                Math.pow(x - (inputX - 64), 2) + Math.pow(y - (inputY - 64), 2)
-        );
+                Math.pow(x - (inputX - 64), 2) + Math.pow(y - (inputY - 64), 2));
         return distance < 64;
     }
 
