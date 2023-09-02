@@ -12,14 +12,12 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.mygdx.game.data.MapLoader.MapFileType.HITSOUND;
 
 public class MapLoader {
 
     private static final String TEMPORARY_DIRECTORY_PATH = System.getProperty("java.io.tmpdir") + "osuclonemap";
 
-    private MapLoader() {
-        // do no create instance
+    private MapLoader() {  // do no create instance
     }
 
     public static Map Load(String path) throws IOException {
@@ -120,7 +118,7 @@ public class MapLoader {
                         break;
 
                     case "wav":
-                        fileMap.get(HITSOUND.name()).add(mapFile.getPath());
+                        fileMap.get(MapFileType.HITSOUND.name()).add(mapFile.getPath());
                         break;
 
                     case "osu":
@@ -147,7 +145,6 @@ public class MapLoader {
         }
         return MapFileType.OTHER.name();
     }
-
 
     private static void unzipFile(String path) throws IOException {
         File destDir = new File(TEMPORARY_DIRECTORY_PATH + File.separator);
@@ -212,8 +209,12 @@ public class MapLoader {
         MapFileType(String extension) {
             this.extension = extension;
         }
-
     }
 
-
+    public static void clean() {
+        File tempDir = new File(TEMPORARY_DIRECTORY_PATH);
+        if (tempDir.exists()) {
+            deleteFolder(tempDir);
+        }
+    }
 }

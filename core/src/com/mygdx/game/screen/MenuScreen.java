@@ -137,6 +137,7 @@ public class MenuScreen implements Screen {
             exitButtonSprite.draw(game.batch);
 
             if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                MapLoader.clean();
                 Gdx.app.exit();
             }
         } else {
