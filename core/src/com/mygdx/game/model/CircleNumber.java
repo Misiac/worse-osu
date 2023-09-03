@@ -1,5 +1,8 @@
 package com.mygdx.game.model;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+
 @SuppressWarnings("ALL")
 public enum CircleNumber {
 
@@ -25,14 +28,18 @@ public enum CircleNumber {
     N9("numbers/default-9.png");
 
     final String path;
+    final Texture texture;
 
 
     CircleNumber(String path) {
         this.path = path;
+        this.texture = new Texture(Gdx.files.internal(path));
     }
 
     public String getPath() {
         return path;
     }
-
+    public Texture getTexture() {
+        return texture;
+    }
 }

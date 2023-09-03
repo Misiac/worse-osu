@@ -198,9 +198,7 @@ public class GameScreen implements Screen {
 
         for (HitObject hitObject : currentHitObjects) {
 
-            Texture circleNumber = new Texture(Gdx.files.internal( // maybe preload all numbers from 0-9?
-                    CircleNumber.valueOf("N" + hitObject.getNumber()).getPath()
-            ));
+            Texture circleNumber = CircleNumber.valueOf("N" + hitObject.getNumber()).getTexture();
             int calculatedX = calculateObjectXPosition(hitObject.getOsuPixelX());
             int calculatedY = calculateObjectYPosition(hitObject.getOsuPixelY());
 
@@ -238,10 +236,10 @@ public class GameScreen implements Screen {
                 }
             }
         }
-        checkIfGameHasEnded();
+        checkAndHandleGameEnd();
     }
 
-    private void checkIfGameHasEnded() {
+    private void checkAndHandleGameEnd() {
 
         if (health <= 0 || timeFromStart > (lastHitObjectTime + 1000)) { // user has lost or completed the map
             boolean loseFlag = health <= 0;
