@@ -67,7 +67,7 @@ public class MenuScreen implements Screen {
         Texture exitButton = new Texture("menu/exit.png");
         logo = new Texture("menu/logo.png");
         Texture info = new Texture(Gdx.files.internal("menu/info.png"));
-        button = new Texture(Gdx.files.internal("test.png"));
+        button = new Texture(Gdx.files.internal("blackpixel.png"));
         playButtonSprite = new Sprite(playButton);
         exitButtonSprite = new Sprite(exitButton);
         mapsetsInfo = new Sprite(new Texture(Gdx.files.internal("menu/mapsets.png")));
