@@ -61,3 +61,6 @@ mvn javafx:jlink
 ```
 
 ## Credits
+
+* [SaberStrike](SaberStrike) - for assets: numbers, grades and hits
+* LovePik - background (<a href="https://lovepik.com/images/backgrounds-modern.html">Modern Png vectors by Lovepik.com</a>)
