@@ -3,10 +3,10 @@
 
 <h1 align="center">
   <br>
- <img src="src/main/resources/com/michal/collectiontracker/img/ctlogoaboutres.png" alt="Circle Clicker" width="150">
+ <img src="assets/menu/logo.png" alt="Circle Clicker" width="750">
 </h1>
 
-<h4 align="center">Circle Clicker is a casual Java project in the LibGDX framework that lets you test your rhythm and reflexes with simple, beat-filled clicking fun, inspired by osu!.</h4>
+<h4 align="center">Circle Clicker is a casual Java project in the libGDX framework that lets you test your rhythm and reflexes with simple, beat-filled clicking fun, inspired by osu!.</h4>
 <p align="center">
 	<a href="#description">Description</a> •
   <a href="#key-features">Key Features</a> •
@@ -17,7 +17,7 @@
 	
 </p>
 
-![screenshot](screenshot.png)
+![screenshot]()
 ## Description
 **Circle Clicker** is a simple Java project brought to life with the libGDX framework, providing a glimpse of rhythmic gaming inspired by _osu!_, using osu beatmap file format While it doesn't aspire to be a full-fledged game, Circle Clicker brings a bit of casual fun and rhythm into your gaming experience.
 
