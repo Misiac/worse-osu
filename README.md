@@ -17,10 +17,8 @@
 	
 </p>
 
-
+## [Click this for gameplay video!](https://www.youtube.com/watch?v=J-QQoqouXfU)
 ![screenshot](screenshot.png)
-
-## Click this for gameplay video!(https://www.youtube.com/watch?v=J-QQoqouXfU)
 
 
 ## Description
