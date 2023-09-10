@@ -72,7 +72,7 @@ public class MapLoader {
 
             int counter = 1;
             Random random = new Random();
-            int currentMax = random.nextInt(1, 10); // simulates circle number for now(?...)
+            int currentMax = random.nextInt(9) + 1; // simulates circle number for now(?...)
 
             while ((line = reader.readLine()) != null) { // reads hitObjects
                 String[] splitLine = line.split(",");
@@ -84,7 +84,7 @@ public class MapLoader {
                 hitObjects.add(hitCircle);
 
                 if (counter == currentMax) {
-                    currentMax = random.nextInt(1, 10);
+                    currentMax = random.nextInt(9) + 1;
                     counter = 1;
                     continue;
                 }
@@ -100,7 +100,7 @@ public class MapLoader {
 
     private static java.util.Map<String, List<String>> filterFiles() {
 
-        List<File> mapFiles = List.of(Objects.requireNonNull(new File(TEMPORARY_DIRECTORY_PATH).listFiles()));
+        File[] mapFiles = Objects.requireNonNull(new File(TEMPORARY_DIRECTORY_PATH).listFiles());
         java.util.Map<String, List<String>> fileMap = new HashMap<>();
         fileMap.put("AUDIO", new LinkedList<>());
         fileMap.put("HITSOUND", new LinkedList<>());
