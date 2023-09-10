@@ -245,7 +245,7 @@ public class GameScreen implements Screen {
             boolean loseFlag = health <= 0;
             music.stop();
             game.setScreen(new ScoreScreen(game, new Score(
-                    map.getMapsets().get(0).getName(),
+                    map.getMapsets().get(mapsetNumber).getName(),
                     LocalDate.now().toString(),
                     LocalTime.now().toString().substring(0, 8),
                     count300,
