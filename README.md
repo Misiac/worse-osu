@@ -22,7 +22,7 @@
 
 
 ## Description
-**Circle Clicker** is a simple Java project brought to life with the libGDX framework, providing a glimpse of rhythmic gaming inspired by _osu!_, using osu beatmap file format While it doesn't aspire to be a full-fledged game, Circle Clicker brings a bit of casual fun and rhythm into your gaming experience.
+**Circle Clicker** is a simple Java project brought to life with the libGDX framework, providing a glimpse of rhythmic gaming inspired by _osu!_, using osu beatmap file format. While it doesn't aspire to be a full-fledged game, Circle Clicker brings a bit of casual fun and rhythm into your gaming experience.
 
 <strong>Please remember that Circle Clicker is not a full-fledged game, but rather a demo showcasing my initial foray into game development. It does not use parameters like circle size, approach rate e.t.c. For the real experience check out [osu!](https://osu.ppy.sh/home)</strong>
  
@@ -55,9 +55,9 @@ To clone the repo use
 git clone https://github.com/Misiac/worse-osu.git
 ```
 You can use it via your IDE
-or build the jlink package with
+or build the runnable jar with
 ```
-mvn javafx:jlink
+./gradlew desktop:dist
 ```
 
 ## Credits
