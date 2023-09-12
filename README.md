@@ -10,7 +10,6 @@
 <p align="center">
 	<a href="#description">Description</a> •
   <a href="#key-features">Key Features</a> •
-  <a href="#key-features">How Does It Work?</a> •
   <a href="#requirements">Requirements</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#credits">Credits</a> 
@@ -43,11 +42,10 @@
 	- Monitor your total score, accuracy, and the number of individual hits for a comprehensive overview of your performance
 	- Be graded based on your accuracy and miss count, providing a clear measure of your rhythmic proficiency
 
-## How Does It Work?
 
 ## Requirements
 * At least 1920x1080 (FHD) resolution screen
-* JDK 9+
+* Java 8+ (JRE/JDK)
 ## How To Use
 
 To clone the repo use
@@ -62,5 +60,6 @@ or build the runnable jar with
 
 ## Credits
 
-* [SaberStrike](https://github.com/sbrstrkkdwmdr/) - for assets: numbers, grades and hits
+* [SaberStrike](https://github.com/sbrstrkkdwmdr/) - assets: numbers, grades, hits, drum-hitnormal
+* [xperimentx](https://osu.ppy.sh/users/4011142) - assets: approachcircle, hitcircle scorebar from skin Gradient_Spam_Twilight
 * LovePik - background (<a href="https://lovepik.com/images/backgrounds-modern.html">Modern Png vectors by Lovepik.com</a>)
