@@ -46,14 +46,15 @@
 ## Requirements
 * At least 1920x1080 (FHD) resolution screen
 * Java 8+ (JRE/JDK)
+* Windows 
 ## How To Use
 
 To clone the repo use
 ```
 git clone https://github.com/Misiac/worse-osu.git
 ```
-You can use it via your IDE
-or build the runnable jar with
+You can use it via your IDE,
+download jar from releases section or build your own with
 ```
 ./gradlew desktop:dist
 ```
