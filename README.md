@@ -58,6 +58,7 @@ download jar from releases section or build your own with
 ```
 ./gradlew desktop:dist
 ```
+Download osu! standard map, for example [this one](https://beatconnect.io/b/2100644/3EgkeVuYheQFv57bnnqr2rNQaj947xv7/), and drag it onto the game window. Follow the ingame instructions.
 
 ## Credits
 
